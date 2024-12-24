@@ -1,0 +1,164 @@
+.home-main {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: rgb(223, 223, 223);
+  background: radial-gradient(
+    circle,
+    rgba(223, 223, 223, 0.4) 0%,
+    rgba(41, 110, 9, 0.15) 94%
+  );
+}
+
+.home-section {
+  min-height: 60vh;
+}
+
+/* Legend */
+/* --------------------------------------------------------------------------------------------------- */
+.home-legend {
+  /* margin-top: var(--xs); */
+  min-height: 65vh;
+  margin-bottom: var(--sm);
+  background: rgb(223, 223, 223);
+  background: radial-gradient(
+    circle,
+    rgba(223, 223, 223, 0.4) 0%,
+    rgba(41, 110, 9, 0.15) 94%
+  );
+  display: flex;
+  border: 0;
+}
+.home-legend-text {
+  display: flex;
+  width: 50vw;
+  flex-direction: column;
+  margin: var(--lg) 0 0 var(--left-margin);
+  gap: var(--sm);
+}
+.legend-img-container {
+  max-width: 460px;
+  display: flex;
+  margin-top: var(--lg);
+}
+
+.legend-img {
+  height: 350px;
+  border-radius: var(--xs);
+}
+
+.home-catch-phrase {
+  color: var(--primary);
+  font-size: 4.5rem;
+}
+.home-subtext {
+  font-size: 1.5rem;
+  color: var(--primary-greyed);
+  font-weight: 400;
+}
+/* --------------------------------------------------------------------------------------------------- */
+/* Graphs */
+/* --------------------------------------------------------------------------------------------------- */
+.home-graphs {
+  min-height: 70vh;
+  display: flex;
+  margin-bottom: var(--sm);
+  
+}
+.graphs-img-container {
+  margin: var(--lg) 0 0 calc(0.5 * var(--left-margin));
+}
+
+.graphs-img {
+  border-radius: var(--xs);
+}
+.graphs-text {
+  display: flex;
+  flex: 0.8;
+  flex-direction: column;
+  margin-top: var(--lg);
+  margin-left: var(--md);
+  gap: var(--sm);
+}
+.graphs-catch-phrase {
+  color: var(--main-text);
+  font-size: 4rem;
+}
+.graphs-subtext {
+  font-size: 1.5rem;
+  color: gray;
+  font-weight: 400;
+}
+
+/* Summaries */
+/* --------------------------------------------------------------------------------- */
+.home-summaries {
+  background: rgb(223, 223, 223);
+  background: radial-gradient(
+    circle,
+    rgba(40, 110, 10, 0.15) 50%,
+    rgba(200, 225, 200, 0.4) 95%
+  );
+  margin: 0;
+  display: flex;
+}
+
+.summaries-text {
+  display: flex;
+  width: 50vw;
+  flex-direction: column;
+  margin: var(--lg) 0 0 var(--left-margin);
+  gap: var(--sm);
+}
+
+.summaries-catch-phrase-holder {
+  width: calc(1.35 * var(--left-margin));
+}
+.summaries-catch-phrase {
+  font-size: 2.6rem;
+  color: var(--primary);
+}
+.summaries-subtext {
+  font-weight: normal;
+  color: var(--primary-greyed);
+}
+
+.summaries-img-holder {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  color: var(--primary);
+  height: var(--left-margin);
+  gap: var(--sm);
+  padding: var(--lg);
+  justify-content: center;
+  align-items: center;
+  border: 5px solid var(--primary-greyed);
+  border-radius: 50%;
+}
+.summaries-img-holder > p {
+  color: var(--primary-greyed);
+  font-size: 0.7rem;
+  font-style: italic;
+}
+
+
+@keyframes wrench-spin {
+  0% {
+    transform: rotate(-45deg);
+  }
+  50% {
+    transform: rotate(45deg);
+  }
+  100% {
+    transform: rotate(-45deg);
+   
+  }
+}
+.wrench {
+  animation-name: wrench-spin;
+  animation-iteration-count: infinite;
+  animation-duration: 4s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-in-out;
+}
