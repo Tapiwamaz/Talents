@@ -1,3 +1,4 @@
+
 from pypdf import PdfReader
 
 def remove_commas(number):
@@ -22,7 +23,7 @@ def get_index_of_subtring(substring,text_array):
 
 
 class Transaction:
-    def __init__(self, id,details = "",balance=0,change=0,credit=True,service_charge=False,date=""):
+    def __init__(self, id,details = "",balance=0,change=0,credit=True,service_charge=False,date="",month=""):
         self.id = id
         self.details = details
         self.balance = balance
@@ -30,12 +31,14 @@ class Transaction:
         self.credit = credit
         self.service_charge = service_charge
         self.date = date
+        self.month = month
 
     def print_info(self):
         print("Details: ", self.details)
         print("Balance: ", self.balance)
         print("Money Change: ", self.change)
-        print("Date: ", self.date, "2024")
+        print("Date:", self.date ,self.month, "2024")
+        # print("Date: ", self.date, "2024")
         print("Service charge: ", self.service_charge)
         print("Credit: ", self.credit)
 
@@ -119,8 +122,7 @@ def read_transactions(file):
                 else:
                     line_details += line[i] + " "
 
-            temp = Transaction(all_transactions.number_of_transactions ,line_details,line_balance,line_change,line_credit_bool,line_service_charge,line_date)
+            temp = Transaction(all_transactions.number_of_transactions ,line_details,line_balance,line_change,line_credit_bool,line_service_charge,line_date,month=line_month)
             all_transactions.insert_transaction(temp) 
 
     return all_transactions
-

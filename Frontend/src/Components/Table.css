@@ -1,0 +1,32 @@
+.table-main {
+    display: flex;
+    border: 1px solid black;   
+}
+.table-aside { 
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black; 
+}
+
+.table-transactions {
+    font-size: 0.85rem;
+}
+
+tr {
+    justify-content: left;
+    text-align: left;
+}
+td {
+    max-width: calc(1.5*var(--left-margin));
+    min-width: 3rem;
+}
+
+.light-green {
+    background-color: rgba(50, 128, 50,0.7);
+}
+.light-red {
+    background-color: rgba(255, 20, 20,0.76);
+}
+.light-grey {
+    background-color: rgba(128, 128, 128, 0.7);
+}

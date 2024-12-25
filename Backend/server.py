@@ -33,6 +33,7 @@ def upload_pdf():
                 "credit": transaction.credit,
                 "service_charge": transaction.service_charge,
                 "date": transaction.date,
+                "month": transaction.month,
             }
             for transaction in transactions.transactions.values()
         ]

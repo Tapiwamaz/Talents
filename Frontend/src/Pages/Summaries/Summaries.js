@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
-import "./Summaries.css"
+import React, { useState } from "react";
+import "./Summaries.css";
+import { Table } from "../../Components/Table";
 
 const Summaries = () => {
   const [file, setFile] = useState(null);
   const [transactions, setTransactions] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -17,47 +18,51 @@ const Summaries = () => {
     }
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     try {
-      const response = await fetch('http://localhost:5000/upload', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/upload", {
+        method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error('Failed to upload the file');
+        throw new Error("Failed to upload the file");
       }
 
       const data = await response.json();
       setTransactions(data);
-      setError('');
+      setError("");
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-  <div>
-      <h1>Upload Bank Statement</h1>
-      <input type="file" accept="application/pdf" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {transactions.length > 0 && (
-        <div>
-          <h2>Parsed Transactions</h2>
-          <ul>
-            {transactions.map((t, index) => (
-              <li key={index}>
-                {t.date}: {t.details} - {t.change} ({t.credit ? 'Credit' : 'Debit'})
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>)
-}
+    <div className="summaries-page">
+      <h1 className="summaries-page-title">Summaries</h1>
 
+      <section className="summaries-searchbar">
+        <label>Search for a transaction</label>
+        <input></input>
+      </section>
 
+      <section className="summaries-upload-section">
+        <input
+          type="file"
+          accept="application/pdf"
+          onChange={handleFileChange}
+          className="summaries-upload-input"
+        />
+        <button className="summaries-upload-btn" onClick={handleUpload}>
+          Upload
+        </button>
+      </section>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <h2>Transactions</h2>
+      {transactions.length > 0 && <Table transactions={transactions} />}
+    </div>
+  );
+};
 
-export default Summaries
+export default Summaries;
