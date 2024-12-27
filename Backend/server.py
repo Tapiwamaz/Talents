@@ -37,7 +37,17 @@ def upload_pdf():
             }
             for transaction in transactions.transactions.values()
         ]
-        return jsonify(transaction_data), 200
+        # transaction_data.reverse()
+        temp = { "number_of_transactions" : transactions.number_of_transactions,
+                "transactions" : transaction_data,
+                "running_balance" :transactions.running_balance,
+                "running_credits" : transactions.running_credits,
+                "running_debits" : transactions.running_debits,
+                "running_charges" : transactions.running_charges,
+                "initial_balance" : transactions.initial_balance,
+                }
+     
+        return jsonify(temp), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     

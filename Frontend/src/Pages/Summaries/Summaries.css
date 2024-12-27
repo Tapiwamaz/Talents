@@ -1,3 +1,135 @@
 .summaries-page {
-    padding:  0 var(--left-margin);
+  padding: 0 var(--left-margin);
+  min-height: 80vh;
+}
+.summaries-top-section {
+  margin: var(--xs) 0 var(--sm) 0;
+  display: flex;
+}
+
+.search-input {
+  height: var(--lg);
+  margin-right: var(--lg);
+  flex: 1;
+  padding: 10px 0 10px var(--xs);
+  font: inherit;
+  border: 2px solid;
+  border-radius: var(--xs);
+  display: none;
+}
+
+.pdf-input-doc,
+.pdf-input-label {
+  transition: all 1s ease-in-out;
+}
+@keyframes close {
+  0% {
+  }
+  100% {
+    flex: 0;
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+    display: none;
+  }
+}
+@keyframes opener {
+  0% {
+    flex: 0;
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+    display: none;
+    
+  }
+  100% {
+    margin-right: var(--lg);
+    flex: 1;
+    padding: 10px 0 10px var(--xs);
+    display: flex;
+    opacity: 1;
+  }
+}
+.open {
+  animation-name: opener;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-duration: 1.4s;
+  display: flex;
+}
+.exuent {
+  animation-name: close;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-duration: 1.4s;
+}
+
+.search-input::placeholder {
+  font-style: italic;
+}
+.summaries-upload-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--xs);
+}
+
+.summaries-upload-input {
+  display: none;
+}
+
+.pdf-input-label {
+  border: 5px dashed black;
+  width: var(--left-margin);
+  height: var(--left-margin);
+  cursor: pointer;
+  border-radius: var(--xs);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: gray;
+}
+
+.pdf-input-doc {
+  border: 2px solid black;
+  width: calc(1.5 * var(--left-margin));
+  height: var(--lg);
+  cursor: pointer;
+  border-radius: var(--xs);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: var(--xs);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+.pdf-input-label p {
+  font-size: 0.7rem;
+  font-style: italic;
+  width: 70%;
+  text-align: center;
+}
+.upload-section-button-holder {
+  display: flex;
+  width: fit-content;
+  gap: var(--xs);
+}
+
+.summaries-upload-btn {
+  font: inherit;
+  width: 45px;
+  height: 45px;
+  padding: var(--xs);
+  border: 2px solid gray;
+  color: gray;
+  border-radius: var(--sm);
+  align-self: flex-end;
+  cursor: pointer;
+  transition: all 100ms ease-in-out;
+}
+.summaries-upload-btn:hover {
+  border-color: black;
+  color: black;
+  transform: scale(1.1);
 }

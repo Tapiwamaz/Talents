@@ -6,7 +6,6 @@
     margin-top: var(--sm);
     border-bottom: 2px solid gray;
     display: flex;
-    /* justify-content: space-around; */
     align-items: center;
 }
 .root-navlink {
@@ -27,15 +26,16 @@
     gap: var(--sm);
 }
 .user-icon-container {
-    margin-left: calc(2*var(--left-margin));
+    margin-left: var(--left-margin);
 }
 
 .root-footer {
-    background: rgb(200, 200, 200);
+    background: rgb(90, 90, 90);
     height: 35vh;
     display: flex;
     flex-direction: column;
     margin-bottom: var(--lg);
+    margin-top: var(--lg);
 }
 
 .footer-settings-container, .footer-info-container{

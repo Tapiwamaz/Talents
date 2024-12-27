@@ -51,6 +51,7 @@ class Transactions:
         self.running_credits = 0.0
         self.running_debits = 0.0
         self.running_charges = 0.0
+        self.initial_balance = 0.0
 
     def fetch_transaction(self,id):
         return self.transactions[str(id)]
@@ -68,6 +69,7 @@ class Transactions:
         if transaction.service_charge:
             self.running_charges += transaction.change    
 
+        
 def read_transactions(file):
     # creating a pdf reader object
     reader = PdfReader(file)
@@ -89,6 +91,7 @@ def read_transactions(file):
 
         if pagenum ==0:
             all_transactions.running_balance = float(remove_commas(page_lines[start_transactions-1].split(" ")[-1]))
+            all_transactions.initial_balance = all_transactions.running_balance
 
 
         for index in range(start_transactions,end_transactions):
@@ -124,5 +127,5 @@ def read_transactions(file):
 
             temp = Transaction(all_transactions.number_of_transactions ,line_details,line_balance,line_change,line_credit_bool,line_service_charge,line_date,month=line_month)
             all_transactions.insert_transaction(temp) 
-
     return all_transactions
+

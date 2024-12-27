@@ -2,12 +2,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  background: rgb(223, 223, 223);
-  background: radial-gradient(
-    circle,
-    rgba(223, 223, 223, 0.4) 0%,
-    rgba(41, 110, 9, 0.15) 94%
-  );
+  /* background: rgb(223, 223, 223); */
 }
 
 .home-section {
@@ -17,8 +12,8 @@
 /* Legend */
 /* --------------------------------------------------------------------------------------------------- */
 .home-legend {
-  /* margin-top: var(--xs); */
-  min-height: 65vh;
+
+  min-height: 90vh;
   margin-bottom: var(--sm);
   background: rgb(223, 223, 223);
   background: radial-gradient(
@@ -33,26 +28,28 @@
   display: flex;
   width: 50vw;
   flex-direction: column;
-  margin: var(--lg) 0 0 var(--left-margin);
+  margin: 0 0 0 var(--left-margin);
   gap: var(--sm);
+  justify-content: center;
 }
 .legend-img-container {
-  max-width: 460px;
+  max-width: 500px;
   display: flex;
-  margin-top: var(--lg);
+  align-items: center;
+
 }
 
 .legend-img {
-  height: 350px;
+  height: 400px;
   border-radius: var(--xs);
 }
 
 .home-catch-phrase {
   color: var(--primary);
-  font-size: 4.5rem;
+  font-size: 4rem;
 }
 .home-subtext {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: var(--primary-greyed);
   font-weight: 400;
 }
