@@ -22,6 +22,7 @@
 .pdf-input-label {
   transition: all 1s ease-in-out;
 }
+
 @keyframes close {
   0% {
   }
@@ -91,6 +92,7 @@
   color: gray;
 }
 
+
 .pdf-input-doc {
   border: 2px solid black;
   width: calc(1.5 * var(--left-margin));
@@ -107,8 +109,11 @@
 .pdf-input-label p {
   font-size: 0.7rem;
   font-style: italic;
-  width: 70%;
+  /* width: 70%; */
   text-align: center;
+}
+.label-p-please {
+  width: 70%;
 }
 .upload-section-button-holder {
   display: flex;

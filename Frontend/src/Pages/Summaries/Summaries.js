@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 // css
 import "./Summaries.css";
 //components
@@ -10,6 +10,8 @@ import {
   DocumentCurrencyDollarIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
+// context
+import { AppContext } from "../../context/AppContext";
 
 // Functions
 const clearFiles = (inputRef, setFile, setError, setLoaded) => {
@@ -18,6 +20,51 @@ const clearFiles = (inputRef, setFile, setError, setLoaded) => {
   setFile(null);
   setError("");
   setLoaded(false);
+};
+
+const saveTransactions = async (filename, sub, transactions) => {
+  const formData = { transactions: transactions, name: filename, sub: sub };
+
+  try {
+    const response = await fetch("http://localhost:5000/api/transactions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      console.error(data);
+      throw new Error("Something went wrong with the transaction");
+    }
+    console.log(data);
+  } catch (e) {
+    console.error("Error", e);
+  }
+};
+
+const saveStatement = async (file, summaryData, subToken) => {
+  const formData = { summary: summaryData, name: file.name, sub: subToken };
+
+  try {
+    const response = await fetch("http://localhost:5000/api/statement", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Something went wrong with the statement");
+    }
+    const data = await response.json();
+    console.log(data);
+  } catch (e) {
+    console.error("Error", e);
+  }
 };
 
 const Summaries = () => {
@@ -29,10 +76,11 @@ const Summaries = () => {
   const [error, setError] = useState("");
   const [searchBool, setSearchBoolean] = useState(false);
 
+  const { user, loggedIn } = useContext(AppContext);
+
   let uploadInput = useRef();
 
   const handleFileChange = (event) => {
-    console.log(event.target.files[0]);
     setFile(event.target.files[0]);
     setError("");
   };
@@ -47,7 +95,7 @@ const Summaries = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:5000/upload", {
+      const response = await fetch("http://localhost:5000/api/upload", {
         method: "POST",
         body: formData,
       });
@@ -63,7 +111,7 @@ const Summaries = () => {
         running_credits,
         running_debits,
         running_charges,
-        initial_balance
+        initial_balance,
       } = data;
       setSummaryData({
         number_of_transactions: number_of_transactions,
@@ -116,7 +164,9 @@ const Summaries = () => {
             {!file ? (
               <>
                 <DocumentCurrencyDollarIcon width={35} />
-                <p>(Please upload your bank statements)</p>
+                <p className="label-p-please">
+                  (Please upload your bank statements)
+                </p>
               </>
             ) : (
               <p>{file.name}</p>
@@ -144,6 +194,10 @@ const Summaries = () => {
             {loaded && (
               <DocumentArrowDownIcon
                 className="summaries-upload-btn"
+                // onClick={() => saveStatement(file, summaryData, user.sub)}
+                onClick={() =>
+                  saveTransactions(file.name, user.sub, allTransactions)
+                }
               />
             )}
 
