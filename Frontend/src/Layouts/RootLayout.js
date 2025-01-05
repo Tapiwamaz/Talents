@@ -10,6 +10,7 @@ import { AppContext } from "../context/AppContext";
 // login helpers
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { Toaster } from "react-hot-toast";
 
 // function
 const login = async ({
@@ -25,7 +26,6 @@ const login = async ({
     const response = await fetch(`http://localhost:5000/api/users/${sub}`, {
       method: "POST",
     });
-
 
     if (!response.ok) {
       throw new Error("Something went wrong on login/signup");
@@ -49,6 +49,7 @@ const RootLayout = () => {
 
   return (
     <div className="root-layout">
+      <Toaster position="top-right" reverseOrder={true} />
       <header className="root-header">
         <NavLink to="/" className="root-navlink root-logo ">
           <strong style={{ color: "var(--primary)" }}>T</strong>alents
@@ -83,7 +84,7 @@ const RootLayout = () => {
               onSuccess={(credentialResponse) => {
                 const { email, given_name, family_name, picture, sub } =
                   jwtDecode(credentialResponse.credential);
-                
+
                 login({
                   email: email,
                   family_name: family_name,

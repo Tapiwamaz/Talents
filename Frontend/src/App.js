@@ -18,6 +18,7 @@ import Summaries from "./Pages/Summaries/Summaries";
 // auth
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>

@@ -1,5 +1,11 @@
 const toCurrency = (number) => {
-  return "R " + number.toLocaleString({ style: "currency" });
+  try {
+    return "R " + number.toLocaleString({ style: "currency" });
+  }
+  catch (e) {
+      return "";
+  }
+  
 };
 
 const toMonth = (number) => {
@@ -21,7 +27,7 @@ const toMonth = (number) => {
     "Dec",
   ];
 
-  return months[number]
+  return months[number-1]
 };
 
 export { toCurrency ,toMonth};

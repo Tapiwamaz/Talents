@@ -8,21 +8,53 @@ import {
   ArrowUpTrayIcon,
   DocumentArrowDownIcon,
   DocumentCurrencyDollarIcon,
+  DocumentPlusIcon,
   TrashIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 // context
 import { AppContext } from "../../context/AppContext";
+import {
+  add_dates,
+  ammend_summary_data,
+  create_summary_data,
+  join_summary_data,
+  reorder_merged_transactions,
+} from "../../Helpers/TransactionArrayFormatters";
 
 // Functions
-const clearFiles = (inputRef, setFile, setError, setLoaded) => {
+const clearFiles = (
+  inputRef,
+  uploadedTrans,
+  fetchedTransactions,
+  setFile,
+  setError,
+  setLoaded,
+  setTransactions,
+  setUploadedTrans,
+  setAllTransactions,
+  setSummaryData
+) => {
   // ? Should this remove all processed transactions
   inputRef.current.value = "";
   setFile(null);
   setError("");
   setLoaded(false);
+  setTransactions((prev) => {
+    let temp = prev.filter((t) => !uploadedTrans.includes(t));
+    return temp;
+  });
+  setAllTransactions(fetchedTransactions);
+  setSummaryData(create_summary_data(fetchedTransactions));
+  setUploadedTrans([]);
 };
 
-const saveTransactions = async (filename, sub, transactions) => {
+const saveTransactions = async (
+  filename,
+  sub,
+  transactions,
+  setUploadedTrans
+) => {
   const formData = { transactions: transactions, name: filename, sub: sub };
 
   try {
@@ -40,14 +72,20 @@ const saveTransactions = async (filename, sub, transactions) => {
       throw new Error("Something went wrong with the transaction");
     }
     console.log(data);
+    setUploadedTrans([]);
   } catch (e) {
     console.error("Error", e);
   }
 };
 
-const saveStatement = async (file, summaryData, subToken) => {
+const saveStatement = async (
+  file,
+  summaryData,
+  subToken,
+  transactions,
+  setUploadedTrans
+) => {
   const formData = { summary: summaryData, name: file.name, sub: subToken };
-
   try {
     const response = await fetch("http://localhost:5000/api/statement", {
       method: "POST",
@@ -62,6 +100,8 @@ const saveStatement = async (file, summaryData, subToken) => {
     }
     const data = await response.json();
     console.log(data);
+
+    saveTransactions(file.name, subToken, transactions, setUploadedTrans);
   } catch (e) {
     console.error("Error", e);
   }
@@ -69,14 +109,24 @@ const saveStatement = async (file, summaryData, subToken) => {
 
 const Summaries = () => {
   const [file, setFile] = useState(null);
-  const [transactions, setTransactions] = useState([]);
-  const [summaryData, setSummaryData] = useState({});
-  const [allTransactions, setAllTransactions] = useState([]);
-  const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState("");
   const [searchBool, setSearchBoolean] = useState(false);
 
-  const { user, loggedIn } = useContext(AppContext);
+  const {
+    user,
+    loggedIn,
+    loaded,
+    summaryData,
+    transactions,
+    fetchedTransactions,
+    allTransactions,
+    uploadedTrans,
+    setUploadedTrans,
+    setAllTransactions,
+    setTransactions,
+    setLoaded,
+    setSummaryData,
+  } = useContext(AppContext);
 
   let uploadInput = useRef();
 
@@ -112,17 +162,28 @@ const Summaries = () => {
         running_debits,
         running_charges,
         initial_balance,
+        start_date,
+        end_date,
       } = data;
-      setSummaryData({
+
+      const newSummary = ammend_summary_data({
         number_of_transactions: number_of_transactions,
         running_balance: running_balance,
         running_credits: running_credits,
         running_debits: running_debits,
         running_charges: running_charges,
         initial_balance: initial_balance,
+        start_date: start_date,
+        end_date: end_date,
+        statements: [file.name],
       });
-      setTransactions(data.transactions);
-      setAllTransactions(data.transactions);
+
+      let temp = add_dates(data.transactions);
+      setSummaryData(join_summary_data(summaryData, newSummary));
+
+      setTransactions((prev) => reorder_merged_transactions(prev, temp));
+      setAllTransactions((prev) => [...prev, ...temp.reverse()]);
+      setUploadedTrans(temp);
       setError("");
       setLoaded(true);
     } catch (err) {
@@ -130,7 +191,6 @@ const Summaries = () => {
       setLoaded(false);
     }
   };
-
   return (
     <div className="summaries-page">
       {/* <h1 className="summaries-page-title">Summaries</h1> */}
@@ -157,33 +217,47 @@ const Summaries = () => {
         ></input>
 
         <section className="summaries-upload-section">
-          <label
-            htmlFor="pdf-input"
-            className={loaded ? "pdf-input-doc" : "pdf-input-label"}
-          >
-            {!file ? (
-              <>
-                <DocumentCurrencyDollarIcon width={35} />
-                <p className="label-p-please">
-                  (Please upload your bank statements)
-                </p>
-              </>
-            ) : (
-              <p>{file.name}</p>
-            )}
-            {error && <p style={{ color: "red" }}>{error}</p>}
-          </label>
-          <input
-            type="file"
-            accept="application/pdf"
-            ref={uploadInput}
-            disabled={loaded}
-            id="pdf-input"
-            onChange={(e) => {
-              handleFileChange(e);
-            }}
-            className="summaries-upload-input"
-          />
+          <div className="summaries-label-holder">
+            <label
+              htmlFor="pdf-input"
+              className={loaded ? "pdf-input-doc" : "pdf-input-label"}
+            >
+              {loaded && file && summaryData.statements && (
+                <p>{summaryData.statements.join(",\n")}</p>
+              )}
+              {loaded && !file && summaryData.statements && (
+                <p>{summaryData.statements.join(",\n")}</p>
+              )}
+              {!loaded && file && <p>{file.name}</p>}
+
+              {!loaded && !file && (
+                <>
+                  <DocumentCurrencyDollarIcon width={35} />
+                  <p className="label-p-please">
+                    (Please upload your bank statements)
+                  </p>
+                </>
+              )}
+              {error && <p style={{ color: "red" }}>{error}</p>}
+            </label>
+            <div className="files-display">
+              {!loaded && summaryData.statements && (
+                <p>{summaryData.statements.join(",\n")}</p>
+              )}
+            </div>
+
+            <input
+              type="file"
+              accept="application/pdf"
+              ref={uploadInput}
+              disabled={loaded}
+              id="pdf-input"
+              onChange={(e) => {
+                handleFileChange(e);
+              }}
+              className="summaries-upload-input"
+            />
+          </div>
           <div className="upload-section-button-holder">
             {!loaded && (
               <ArrowUpTrayIcon
@@ -191,22 +265,55 @@ const Summaries = () => {
                 onClick={handleUpload}
               />
             )}
+            {!loaded && summaryData.statements && (
+              <XMarkIcon
+                className="summaries-upload-btn"
+                onClick={() => {
+                  setLoaded(true)
+                }}
+              />
+            )}
             {loaded && (
+              <DocumentPlusIcon
+                className="summaries-upload-btn"
+                onClick={() => {
+                  setLoaded(false);
+                }}
+              />
+            )}
+            {loaded && loggedIn && uploadedTrans.length > 0 && (
               <DocumentArrowDownIcon
                 className="summaries-upload-btn"
-                // onClick={() => saveStatement(file, summaryData, user.sub)}
                 onClick={() =>
-                  saveTransactions(file.name, user.sub, allTransactions)
+                  saveStatement(
+                    file,
+                    summaryData,
+                    user.sub,
+                    uploadedTrans,
+                    setUploadedTrans
+                  )
                 }
               />
             )}
-
-            <TrashIcon
-              className="summaries-upload-btn"
-              onClick={() => {
-                clearFiles(uploadInput, setFile, setError, setLoaded);
-              }}
-            />
+            {uploadedTrans.length > 0 && (
+              <TrashIcon
+                className="summaries-upload-btn"
+                onClick={() => {
+                  clearFiles(
+                    uploadInput,
+                    uploadedTrans,
+                    fetchedTransactions,
+                    setFile,
+                    setError,
+                    setLoaded,
+                    setTransactions,
+                    setUploadedTrans,
+                    setAllTransactions,
+                    setSummaryData
+                  );
+                }}
+              />
+            )}
           </div>
         </section>
       </section>

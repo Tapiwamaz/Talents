@@ -41,7 +41,6 @@
     padding: 0;
     margin: 0;
     display: none;
-    
   }
   100% {
     margin-right: var(--lg);
@@ -73,10 +72,24 @@
   flex-direction: column;
   flex: 1;
   gap: var(--xs);
+  /* outline: 2px solid #000000; */
 }
 
 .summaries-upload-input {
   display: none;
+}
+.summaries-label-holder {
+  display: flex;
+}
+.files-display {
+  /* border: 2px solid rebeccapurple; */
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--xs);
+  color: gray;
 }
 
 .pdf-input-label {
@@ -92,24 +105,29 @@
   color: gray;
 }
 
-
 .pdf-input-doc {
   border: 2px solid black;
   width: calc(1.5 * var(--left-margin));
-  height: var(--lg);
+  min-height: var(--lg);
   cursor: pointer;
   border-radius: var(--xs);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding-left: var(--xs);
   font-size: 0.8rem;
   font-style: italic;
 }
-.pdf-input-label p {
+.pdf-input-doc p {
+  text-align: center;
+  width: 95%;
+  overflow-wrap: break-word;
+}
+.pdf-input-label p,
+.files-display p {
   font-size: 0.7rem;
   font-style: italic;
-  /* width: 70%; */
   text-align: center;
 }
 .label-p-please {
