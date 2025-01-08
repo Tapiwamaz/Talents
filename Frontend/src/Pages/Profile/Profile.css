@@ -1,0 +1,151 @@
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  padding: 0 calc(var(--left-margin));
+  gap: var(--lg);
+}
+.divider-line {
+  background: rgba(30, 80, 6, 0.5);
+  border-radius: var(--xs);
+  height: 1px;
+}
+
+.profile-top-section {
+  display: flex;
+  align-items: center;
+  gap: var(--xs);
+  margin-top: var(--sm);
+}
+
+.profile-name {
+  font-size: 1.2rem;
+}
+.profile-email {
+  font-weight: normal;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.profile-user-icon,
+.profile-user-icon-default {
+  width: calc(0.6 * var(--left-margin));
+  height: calc(0.6 * var(--left-margin));
+  color: gray;
+  border: 3px solid rgba(128, 128, 128, 0.7);
+  border-radius: var(--sm);
+}
+
+.profile-user-icon {
+  padding: var(--xs);
+}
+
+.profile-logout-button {
+  font: inherit;
+  width: 40px;
+  height: 40px;
+  padding: var(--xs);
+  border: 2px solid gray;
+  color: gray;
+  border-radius: var(--sm);
+  cursor: pointer;
+  transition: all 100ms ease-in-out;
+}
+.profile-logout-button:hover {
+  color: red;
+  border-color: red;
+  transform: scale(1.1);
+}
+
+.profile-mid-section {
+  display: flex;
+  background-color: rgba(128, 128, 128, 0.1);
+  padding: var(--sm) var(--sm);
+  border-radius: var(--xs);
+  box-shadow: -4px 1px 50px -4px rgba(128, 128, 128, 0.71);
+  -webkit-box-shadow: -4px 1px 50px -4px rgba(128, 128, 128, 0.71);
+  -moz-box-shadow: -4px 1px 50px -4px rgba(128, 128, 128, 0.71);
+}
+
+.upload-summary-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--xs);
+}
+.card-holder {
+  display: flex;
+}
+.summary-subcard {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.summary-subcard p {
+  color:gray
+}
+.subcard-icon {
+  width: 25px;
+  height: 25px;
+}
+
+.icon-holder {
+  display: flex;
+  gap: 0.3rem;
+  margin-bottom: var(--sm);
+}
+
+.delete-section {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(50, 50, 50,1);
+  color: white;
+  outline: 2px solid red;
+  border-radius: var(--xs);
+  box-shadow: -4px 1px 38px -13px rgba(250,0,0,0.71);
+  -webkit-box-shadow: -4px 1px 38px -13px rgba(250,0,0,0.71);
+  -moz-box-shadow: -4px 1px 38px -13px rgba(250,0,0,0.71);
+}
+
+.button-holder {
+  display: flex;
+  flex: 1;
+  border: 1px solid gray;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  padding: var(--md) var(--lg);
+  justify-content: space-between;
+}
+
+.profile-text-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-text-section text {
+  font-size: 0.7rem;
+  font-style: italic;
+}
+
+.btn-delete {
+  background-color: rgba(60, 60, 60,1);
+  color: red;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+  border: gray solid 2px;
+  border-radius: var(--xs);
+  padding: var(--xs);
+  min-width: 100px;
+  max-width: 200px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all ease-in-out 150ms;
+}
+
+.btn-delete:hover {
+  border-color: red;
+  scale: 1.1;
+}

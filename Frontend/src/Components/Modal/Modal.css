@@ -1,0 +1,67 @@
+.modal-main {
+  background-color: rgba(100, 100, 100, 0.7);
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  transition: all ease-in-out 150ms;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  transition: all ease-in-out 150ms;
+  width: calc(1.4 * var(--left-margin));
+  height: calc(1.2 * var(--left-margin));
+  padding:  var(--md) var(--sm) 0 var(--sm);
+  margin: auto;
+  margin-top: 12vw;
+  background-color: whitesmoke;
+  align-items: center;
+  border-radius: var(--xs);
+  gap: var(--sm);
+  text-align: center;
+  box-shadow: -4px 1px 50px -4px rgba(50, 50, 50, 0.71);
+  -webkit-box-shadow: -4px 1px 50px -4px rgba(50, 50, 50, 0.71);
+  -moz-box-shadow: -4px 1px 50px -4px rgba(50, 50, 50, 0.71);
+}
+.modal-icon {
+  width: var(--lg);
+  padding: 5px;
+  border-radius: 50%;
+  background-color: rgba(255, 230, 230, 0.9);
+  box-shadow: -4px 1px 38px -13px rgba(250, 0, 0, 0.71);
+  -webkit-box-shadow: -4px 1px 38px -13px rgba(250, 0, 0, 0.71);
+  -moz-box-shadow: -4px 1px 38px -13px rgba(250, 0, 0, 0.71);
+}
+.modal text {
+  font-size: 0.7rem;
+  font-style: italic;
+}
+
+.modal-button-holder {
+  display: flex;
+  width: 100%;
+  gap: var(--xs);
+}
+.modal-btn {
+  font-size: 0.9rem;
+  width: 100%;
+  background-color: rgb(215, 215, 215);
+  color: inherit;
+  margin: 0 auto;
+  border: none;
+  border-radius: var(--sm);
+  cursor: pointer;
+  padding: 0.8rem 0;
+  transition: all ease-in-out 150ms;
+}
+.modal-btn:hover {
+  scale: 1.05;
+}
+
+.btn-yes {
+  background-color: rgba(220, 50, 50, 1);
+  color: white;
+}

@@ -52,10 +52,10 @@ const fetch_transactions = async (
 
 const AppContextProvider = (props) => {
   const [user, setUser] = useState({
-    name: "given_name",
-    surname: "family_name",
+    name: "Tapiwa",
+    surname: "Mazarura",
     picture: "https://picsum.photos/200",
-    email: "email",
+    email: "mazarura@gmail.com",
     sub: "117604033210378294446",
   });
   // const [user,setUser] = useState({});
