@@ -210,6 +210,50 @@ def upload_pdf():
         return jsonify(temp), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+ 
+# create a new budget 
+@app.route('/api/budgets/create',methods=['POST'])
+def budgets():
+    req = request.get_json()
+    
+    if request.method == 'POST':
+        if 'sub' not in req or 'name' not in req or 'category' not in req or 'start_date' not in req or 'end_date' not in req or 'total' not in req:
+            return jsonify({"Error": "Not enough information provided"}), 400
+        
+        name = req["name"]
+        category = req["category"]
+        start_date = req["start_date"]
+        end_date = req["end_date"]
+        total = req["total"]
+        sub = req["sub"] 
+        try: 
+            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
+                                        user=DB.DB_CONFIG["user"],
+                                        host=DB.DB_CONFIG["host"],
+                                        password=DB.DB_CONFIG["password"])
+            cursor = connection.cursor()
+            
+            cursor.execute(""" 
+                            insert into budgets (user_id,name,category,start_date,end_date,total_amount) 
+                            VALUES (%s, %s, %s, %s, %s, %s) RETURNING budget_id;
+                        """,
+                            (sub,name, category,start_date,end_date,total,)
+                        )
+            results = cursor.fetchone()  # Fetch a single row instead of fetchall()
+            budget_id = results[0]
+            connection.commit()
+            return jsonify({"budget_id":budget_id}), 200
+        except errors.UniqueViolation:
+            return jsonify({"Error": "Budget already exists!"}), 400
+        except Exception as e:
+            return jsonify({"Error": str(e)}), 401
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close() 
+ 
+ 
     
 if __name__ == '__main__':
     app.run(debug=True)    

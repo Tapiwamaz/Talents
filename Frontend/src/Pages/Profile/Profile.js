@@ -3,13 +3,13 @@ import "./Profile.css";
 import React, { useContext, useState } from "react";
 // auth
 import { googleLogout } from "@react-oauth/google";
+//context
 import { AppContext } from "../../context/AppContext";
 // icons
 import {
   ArrowLeftStartOnRectangleIcon,
   DocumentCheckIcon,
   ExclamationTriangleIcon,
-  TrashIcon,
 } from "@heroicons/react/24/outline";
 import { UserIcon } from "@heroicons/react/24/solid";
 import Modal from "../../Components/Modal/Modal";

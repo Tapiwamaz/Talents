@@ -1,0 +1,118 @@
+/* Create Component */
+.budget-create-main {
+  /* height: 50vh; */
+  width: 50vw;
+  display: flex;
+  gap: var(--xs);
+  padding: var(--sm) var(--md);
+  flex-direction: column;
+  border-radius: var(--sm);
+  background-color: var(--background);
+}
+.subtitle {
+  font-weight: normal;
+  margin-bottom: var(--sm);
+}
+
+.budget-create-holder,
+.budget-create-section {
+  display: flex;
+  gap: 3px;
+}
+
+.budget-create-section {
+  flex: 1;
+  flex-direction: column;
+}
+
+.budget-create-separator {
+  width: 1px;
+  background-color: gray;
+  border-radius: var(--md);
+  margin: 0 var(--sm);
+}
+
+.budget-create-section .budget-create-label {
+  color: rgb(85, 85, 85);
+  font-size: 0.9rem;
+}
+
+.budget-create-input {
+  height: var(--md);
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--main-text);
+  border: none;
+  outline: 1px gray solid;
+  border-radius: var(--xs);
+  padding: var(--xs);
+}
+
+.budget-create-input:active,
+.budget-create-input:focus {
+  outline-color: var(--primary);
+  outline-width: 2px;
+}
+
+.budget-create-input::placeholder {
+  font-style: italic;
+  color: gray;
+}
+
+.budget-create-separator-horiz {
+  height: 1px;
+  margin: var(--sm) 0;
+  border-radius: var(--md);
+  background-color: gray;
+}
+
+.budget-create-btn-holder {
+  display: flex;
+  justify-content: space-between;
+  /* outline: 1px gray solid; */
+}
+.budget-create-btn {
+  font-family: inherit;
+  border: none;
+  background-color: inherit;
+  border-radius: var(--xs);
+  padding: var(--xs) var(--md);
+  outline: black solid 2px;
+  cursor: pointer;
+  transition: all ease-in-out 150ms;
+}
+
+.budget-create-btn-holder .budget-create-btn:nth-of-type(2) {
+  background-color: var(--primary);
+  color: white;
+  outline: none;
+}
+
+.budget-create-btn:hover {
+  scale: 1.05;
+}
+
+.budget-create-categories {
+  display: flex;
+  gap: var(--xs);
+  flex-wrap: wrap;
+}
+.budget-create-category-btn {
+  font-family: inherit;
+  border: none;
+  background-color: gainsboro;
+  border-radius: var(--xs);
+  padding: var(--xs) var(--md);
+  cursor: pointer;
+  transition: all ease-in 50ms;
+}
+.budget-create-category-btn:hover {
+    background-color: rgb(200, 200, 200);
+}
+
+.active-btn {
+    background-color: rgb(200, 200, 200);
+    outline: 2px var(--primary) solid;
+}
+
+/* Create Component end */

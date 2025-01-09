@@ -15,6 +15,7 @@
   --main-text: rgb(30, 30, 30);
   --primary : rgb(30, 80, 6);
   --primary-greyed : rgba(35, 75, 0, 0.8);
+  --background: whitesmoke;
 
   /* Margins */
   --left-margin: calc(100vw / 7);

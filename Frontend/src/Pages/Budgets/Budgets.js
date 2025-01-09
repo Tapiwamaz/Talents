@@ -1,9 +1,22 @@
-import React from 'react'
+// react
+import React, { useContext, useState } from 'react'
+// css
 import "./Budgets.css"
+// components
+import CreateBudget from '../../Components/BudgetCards/CreateBudget'
+// context
+import { AppContext } from "../../context/AppContext";
+
 
 const Budgets = () => {
+  const [newBudget,setNewBudget] = useState({})
+
+  const {user} = useContext(AppContext);
+  
   return (
-    <div>Budgets</div>
+    <main className='budgets-main'>
+      <CreateBudget user={user}  newBudget={newBudget} setNewBudget={setNewBudget}/>
+    </main>
   )
 }
 

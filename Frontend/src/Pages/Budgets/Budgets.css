@@ -1,0 +1,5 @@
+.budgets-main {
+    display: flex;
+    flex-direction: column;
+    padding: var(--xs) var(--left-margin);
+}
