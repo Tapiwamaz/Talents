@@ -1,7 +1,7 @@
 /* Create Component */
 .budget-create-main {
-  /* height: 50vh; */
-  width: 50vw;
+  flex: 1;
+  max-width: 55%;
   display: flex;
   gap: var(--xs);
   padding: var(--sm) var(--md);
@@ -116,3 +116,83 @@
 }
 
 /* Create Component end */
+
+/* Create Expenses */
+.expense-create-main {
+  flex: 0.5;
+  display: flex;
+  gap: var(--xs);
+  padding: var(--sm) var(--md);
+  flex-direction: column;
+  border-radius: var(--sm);
+  background-color: var(--background-second);
+}
+.budget-name {
+  color: var(--primary);
+}
+
+.expense-create-holder{
+  display: flex;
+}
+.expense-create-div {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+ gap: var(--xs);
+}
+
+.expense-create-label {
+  color: rgb(85, 85, 85);
+  font-size: 0.9rem;
+}
+
+/* Create Expenses */
+
+
+/* BudgetCard Main */
+.budgetCard-main {
+  display: flex;
+  flex-direction: column;
+  min-width: calc(1.6* var(--left-margin));
+  border: 2px solid var(--primary);
+  gap: var(--xs);
+  border-radius: var(--xs);
+  padding:  var(--sm) var(--md);
+  margin-bottom: var(--xs);
+  justify-content: center;
+  align-items: center;
+}
+
+.description-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.description-line p {
+  font-size: 0.7rem;
+}
+
+.budget-progress {
+  width: 100%;
+}
+.budgetCard-btn {
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: gray solid 2px;
+  border-radius: var(--xs);
+  color: var(--main-text);
+  padding: var(--xs);
+  width: 120px;
+  font-weight: bold;
+  transition: all ease-in-out 150ms;
+  text-decoration: none;
+}
+.budgetCard-btn:visited {
+  color: var(--main-text);
+}
+
+
+/* BudgetCard Main */

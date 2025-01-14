@@ -79,7 +79,6 @@ def save_fetch_statement():
 @app.route('/api/transactions/<user_id>', methods=['GET'])
 def fetch_transactions(user_id):
     if request.method == 'GET':
-        print(user_id)
         
         try:
             connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
@@ -217,14 +216,14 @@ def budgets():
     req = request.get_json()
     
     if request.method == 'POST':
-        if 'sub' not in req or 'name' not in req or 'category' not in req or 'start_date' not in req or 'end_date' not in req or 'total' not in req:
+        if 'sub' not in req or 'name' not in req or 'category' not in req or 'start_date' not in req or 'end_date' not in req or 'total_amount' not in req:
             return jsonify({"Error": "Not enough information provided"}), 400
         
         name = req["name"]
         category = req["category"]
         start_date = req["start_date"]
         end_date = req["end_date"]
-        total = req["total"]
+        total = req["total_amount"]
         sub = req["sub"] 
         try: 
             connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
@@ -239,12 +238,13 @@ def budgets():
                         """,
                             (sub,name, category,start_date,end_date,total,)
                         )
-            results = cursor.fetchone()  # Fetch a single row instead of fetchall()
+            
+            results = cursor.fetchone()
             budget_id = results[0]
             connection.commit()
             return jsonify({"budget_id":budget_id}), 200
         except errors.UniqueViolation:
-            return jsonify({"Error": "Budget already exists!"}), 400
+            return jsonify({"Error": "Budget already exists!"}), 201
         except Exception as e:
             return jsonify({"Error": str(e)}), 401
         finally:
@@ -253,7 +253,96 @@ def budgets():
             if connection:
                 connection.close() 
  
- 
+
+@app.route('/api/budgets/<user_id>' ,methods=['GET'])
+def get_budgets(user_id):
+    
+    try: 
+        connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
+                                    user=DB.DB_CONFIG["user"],
+                                    host=DB.DB_CONFIG["host"],
+                                    password=DB.DB_CONFIG["password"])
+        cursor = connection.cursor()
+        
+        cursor.execute(""" 
+                        select (user_id,name,category,start_date,end_date,total_amount,budget_id) from budgets 
+                        WHERE user_id=%s ;
+                    """,
+                        (str(user_id),)
+                    )
+        results = cursor.fetchall()
+        connection.commit()
+        
+        column_names = ["user_id","name","category","start_date","end_date","total_amount","budget_id"]
+        if results:
+            budgets = []
+            for row in results:
+                line = row[0][1:len(row[0])-1].split(",")
+                print(line)
+                budget = {}
+                for i in range(0,len(column_names)):
+                    if i==5:
+                        budget[column_names[i]] = float(line[i])
+                    elif i==1:
+                        budget[column_names[i]] = line[i][1:len(line[i])-1]
+                    elif i==1:
+                        budget[column_names[i]] = int(line[i])
+                    else:    
+                        budget[column_names[i]] = line[i]        
+                budgets.append(budget)
+                    
+            return jsonify({"Budgets": budgets}), 200
+        else:
+            return jsonify({"Budgets": []}), 200
+
+    
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 401
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+    
+
+# get and create expenses
+@app.route('/api/expenses', methods=['GET', 'POST'])
+def expenses():
+    if request.method == 'POST':
+        req = request.get_json()
+        
+        if 'budget_id' not in req or 'amount' not in req or 'description' not in req:
+            return jsonify({"Error": "Not enough information"}),400
+        
+        budget_id = req["budget_id"]
+        amount = req["amount"] 
+        description = req["description"] 
+            
+        try: 
+            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
+                                        user=DB.DB_CONFIG["user"],
+                                        host=DB.DB_CONFIG["host"],
+                                        password=DB.DB_CONFIG["password"])
+            cursor = connection.cursor()
+            
+            cursor.execute(""" 
+                                insert into expenses (budget_id,amount,description) 
+                                VALUES (%s, %s, %s) RETURNING expense_id
+                            """,
+                                (budget_id,amount,description,expense_date,)
+                            )
+            results = cursor.fetchone()  # Fetch a single row instead of fetchall()
+            expense_id = results[0]
+            connection.commit()
+            return jsonify({"expense_id":expense_id}), 200
+
+        except Exception as e:
+            return jsonify({"Error": str(e)}), 401
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
     
 if __name__ == '__main__':
     app.run(debug=True)    

@@ -17,16 +17,20 @@ import Profile from "./Pages/Profile/Profile";
 import Summaries from "./Pages/Summaries/Summaries";
 // auth
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import SpecificBudget from "./Pages/SpecificBudget/SpecificBudget";
+import ErrorPage from "./Pages/ErrorPage/ErrorPage";
 
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<RootLayout />}>
+    <Route path="/" element={<RootLayout />} errorElement={<ErrorPage/>}>
       <Route index element={<Home />}></Route>
       <Route path="budgets" element={<Budgets />}></Route>
-      <Route path="reports" element={<Reports />}></Route>
-      <Route path="news" element={<News />}></Route>
-      <Route path="summaries" element={<Summaries />}></Route>
+      <Route path="budgets/:budget_id" element={<SpecificBudget/>} ></Route>
+
+      {/* <Route path="reports" element={<Reports />}></Route> */}
+      {/* <Route path="news" element={<News />}></Route> */}
+      {/* <Route path="summaries" element={<Summaries />}></Route> */}
       <Route path="profile" element={<Profile />}></Route>
     </Route>
   )

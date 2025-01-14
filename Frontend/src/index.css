@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Coustard:wght@400;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Coustard:wght@400;900&display=swap");
 * {
   box-sizing: border-box;
   margin: 0;
@@ -13,37 +13,42 @@
 
   /* colors */
   --main-text: rgb(30, 30, 30);
-  --primary : rgb(30, 80, 6);
-  --primary-greyed : rgba(35, 75, 0, 0.8);
+  --primary: rgb(30, 80, 6);
+  --primary-greyed: rgba(35, 75, 0, 0.8);
   --background: whitesmoke;
+  --background-second: rgb(215, 215, 215);
 
   /* Margins */
   --left-margin: calc(100vw / 7);
-
 }
 body {
-  font-family: "Coustard", serif;;
+  font-family: "Coustard", serif;
   font-weight: 400;
 }
- h1,h2,h3,h4,h5,h6,p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
   color: var(--main-text);
- }
-
-
+}
 
 ::-webkit-scrollbar {
   width: 10px;
+  height: 10px;
 }
 
-::-webkit-scrollbar-track {
-    background-color: rgba(210, 210, 210, 1);;
 
+::-webkit-scrollbar-track {
+  background-color: rgba(210, 210, 210, 1);
 }
 ::-webkit-scrollbar-thumb {
   background-color: gray;
   border-radius: 2px;
- 
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: rgb(100, 100, 100);
-} 
+}
+

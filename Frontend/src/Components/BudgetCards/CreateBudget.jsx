@@ -7,16 +7,21 @@ const handleChange = (change, type, setNewBudget) => {
   setNewBudget((prev) => {
     let temp = { ...prev };
     temp[type] = change;
-    console.log(temp);
     return temp;
   });
 };
 
-const sendBudget = async ({ sub, newBudget }) => {
+const sendBudget = async ({
+  sub,
+  newBudget,
+  setNewBudget,
+  setCreatedB,
+  setAllBudgets,
+}) => {
   const formData = {
     sub: sub,
     name: newBudget.name,
-    total: newBudget.total,
+    total_amount: newBudget.total_amount,
     category: newBudget.category,
     start_date: newBudget.start_date,
     end_date: newBudget.end_date,
@@ -32,13 +37,32 @@ const sendBudget = async ({ sub, newBudget }) => {
     if (!response.ok) {
       throw new Error("Error creating budget");
     }
-    
+
+    const data = await response.json();
+    if (!data.budget_id) {
+      toast.error(`"${newBudget.name}" already exists`);
+      throw new Error("User has another budget with same name");
+    }
+    console.log(data);
+    formData.budget_id = data.budget_id;
+    setNewBudget(formData);
+    setAllBudgets((prev) => [formData, ...prev]);
+    setCreatedB(true);
+
     return response;
   } catch (e) {
+    console.log(e);
     throw new Error("Error creating budget", e);
   }
 };
-const handleSubmit = async ({ sub, newBudget }) => {
+const handleSubmit = async ({
+  sub,
+  newBudget,
+  setNewBudget,
+  setCreatedB,
+  setAllBudgets,
+}) => {
+  console.log(newBudget)
   if (
     !sub ||
     !newBudget ||
@@ -46,20 +70,26 @@ const handleSubmit = async ({ sub, newBudget }) => {
     !newBudget.start_date ||
     !newBudget.end_date ||
     !newBudget.category ||
-    !newBudget.total
+    !newBudget.total_amount
   ) {
     toast.error("Please fill in all the fields");
     return;
   }
 
-  const myPromise = sendBudget({ sub: sub, newBudget: newBudget });
+  const myPromise = sendBudget({
+    sub: sub,
+    newBudget: newBudget,
+    setNewBudget: setNewBudget,
+    setCreatedB: setCreatedB,
+    setAllBudgets: setAllBudgets,
+  });
 
   toast.promise(myPromise, {
     loading: "Saving budget",
     success: "Budget saved!",
     error: "Budget could not be saved",
   });
-//   toast saying check internet
+  //   toast saying check internet
 };
 
 const categories = [
@@ -71,7 +101,14 @@ const categories = [
   "Leisure",
 ];
 
-const CreateBudget = ({ user, newBudget, setNewBudget }) => {
+const CreateBudget = ({
+  user,
+  newBudget,
+  setNewBudget,
+  setCreatedB,
+  createdB,
+  setAllBudgets,
+}) => {
   const [activeCategory, setActiveCategory] = useState(-1);
   return (
     <main className="budget-create-main">
@@ -89,6 +126,7 @@ const CreateBudget = ({ user, newBudget, setNewBudget }) => {
             className="budget-create-input"
             placeholder="e.g Groceries"
             value={newBudget.name || ""}
+            disabled={createdB}
             maxLength={40}
             onChange={(e) => handleChange(e.target.value, "name", setNewBudget)}
           />
@@ -102,6 +140,7 @@ const CreateBudget = ({ user, newBudget, setNewBudget }) => {
             id="budget-create-start-date"
             type="date"
             className="budget-create-input"
+            disabled={createdB}
             value={newBudget.start_date || ""}
             min={toInputFormat(new Date())}
             onChange={(e) =>
@@ -119,6 +158,7 @@ const CreateBudget = ({ user, newBudget, setNewBudget }) => {
             type="date"
             className="budget-create-input"
             value={newBudget.end_date || ""}
+            disabled={createdB}
             min={toInputFormat(new Date())}
             onChange={(e) =>
               handleChange(e.target.value, "end_date", setNewBudget)
@@ -133,10 +173,11 @@ const CreateBudget = ({ user, newBudget, setNewBudget }) => {
             className="budget-create-input"
             placeholder="e.g 1000"
             min={10}
+            disabled={createdB}
             max={1000000}
-            value={newBudget.total || ""}
+            value={newBudget.total_amount || ""}
             onChange={(e) =>
-              handleChange(e.target.value, "total", setNewBudget)
+              handleChange(e.target.value, "total_amount", setNewBudget)
             }
           />
         </section>
@@ -151,6 +192,7 @@ const CreateBudget = ({ user, newBudget, setNewBudget }) => {
             {categories.map((category, index) => (
               <button
                 key={index}
+                disabled={createdB}
                 className={
                   activeCategory === index
                     ? "budget-create-category-btn active-btn"
@@ -169,13 +211,27 @@ const CreateBudget = ({ user, newBudget, setNewBudget }) => {
       </div>
       <div className="budget-create-separator-horiz" />
       <section className="budget-create-btn-holder">
-        <button className="budget-create-btn" onClick={() => setNewBudget({})}>
+        <button
+          className="budget-create-btn"
+          disabled={createdB}
+          onClick={() => {
+            setNewBudget({});
+            setActiveCategory(-1);
+          }}
+        >
           Clear
         </button>
         <button
           className="budget-create-btn"
+          disabled={createdB}
           onClick={() => {
-            handleSubmit({sub:user.sub, newBudget:newBudget});
+            handleSubmit({
+              sub: user.sub,
+              newBudget: newBudget,
+              setNewBudget: setNewBudget,
+              setCreatedB: setCreatedB,
+              setAllBudgets: setAllBudgets,
+            });
           }}
         >
           Done

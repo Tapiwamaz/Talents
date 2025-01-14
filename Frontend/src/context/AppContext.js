@@ -4,6 +4,7 @@ import {
   create_summary_data,
 } from "../Helpers/TransactionArrayFormatters";
 import toast from "react-hot-toast";
+import { mockBudgets } from "../Helpers/MockData";
 
 export const AppContext = createContext();
 
@@ -15,8 +16,8 @@ const fetch_transactions = async (
   setTransactions,
   setSummaryData
 ) => {
-  toast(`Hi, ${user.name}`, {
-    icon: '👋',
+  toast(`Welcome back, ${user.name}`, {
+    icon: "👋",
   });
   try {
     const response = await fetch(
@@ -50,6 +51,26 @@ const fetch_transactions = async (
   }
 };
 
+const fetch_budgets = async (user, setAllBudgets) => {
+
+  try {
+    const response = await fetch(`http://localhost:5000/api/budgets/${user.sub}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+   
+
+    if (response.ok) {
+      const data = await response.json();
+      setAllBudgets(data.Budgets)
+    }
+  } catch (e) {
+    console.log("Error fetching budgets", e);
+  }
+};
+
 const AppContextProvider = (props) => {
   const [user, setUser] = useState({
     name: "Tapiwa",
@@ -58,7 +79,7 @@ const AppContextProvider = (props) => {
     email: "mazarura@gmail.com",
     sub: "117604033210378294446",
   });
-  // const [user,setUser] = useState({});
+  
 
   const [loaded, setLoaded] = useState(false);
   const [loggedIn, setLoggedIn] = useState(true);
@@ -68,6 +89,7 @@ const AppContextProvider = (props) => {
   const [uploadedTrans, setUploadedTrans] = useState([]);
   const [summaryData, setSummaryData] = useState({});
 
+  const [allBudgets, setAllBudgets] = useState(mockBudgets);
 
   useEffect(
     (e) => {
@@ -83,9 +105,10 @@ const AppContextProvider = (props) => {
           setTransactions,
           setSummaryData
         );
+        fetch_budgets(user,setAllBudgets)
       }
     },
-    [loggedIn,user]
+    [loggedIn, user]
   );
 
   const contextValue = {
@@ -97,6 +120,7 @@ const AppContextProvider = (props) => {
     summaryData,
     fetchedTransactions,
     uploadedTrans,
+    allBudgets,
     setUser,
     setLoggedIn,
     setAllTransactions,
@@ -104,7 +128,8 @@ const AppContextProvider = (props) => {
     setUploadedTrans,
     setLoaded,
     setSummaryData,
-    setFetchedTransactions
+    setFetchedTransactions,
+    setAllBudgets,
   };
 
   return (

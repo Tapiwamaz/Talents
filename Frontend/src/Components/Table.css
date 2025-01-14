@@ -36,13 +36,13 @@
   max-height: 70vh;
 }
 
-th {
+.table-main th {
   padding: var(--xs);
   background: rgba(41, 110, 9, 0.6);
   font-size: 0.95rem;
 }
 
-tr {
+.table-main tr {
   justify-content: left;
   text-align: left;
   background: rgba(41, 110, 9, 0.5);
@@ -52,14 +52,14 @@ tr {
   max-height: var(--md);
 
 }
-tr:nth-child(1) {
+.table-main tr:nth-child(1) {
   cursor: auto;
 }
-tr:nth-child(even) {
+.table-main tr:nth-child(even) {
   background-color: #d2d2d2;
 }
 
-td {
+.table-main td {
   max-width: calc(1.5 * var(--left-margin));
   min-width: 4rem;
   padding: 4px var(--xs);

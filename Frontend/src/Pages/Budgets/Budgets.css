@@ -1,5 +1,41 @@
 .budgets-main {
-    display: flex;
-    flex-direction: column;
-    padding: var(--xs) var(--left-margin);
+  display: flex;
+  flex-direction: column;
+  /* padding: var(--xs) var(--left-margin); */
+  gap: var(--sm);
+}
+.budgets-create-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* border: 2px solid black; */
+  padding: var(--xs);
+  gap: var(--xs);
+}
+.budgets-create-section > main {
+  transition: all ease-in-out 300ms;
+}
+
+.recent-expenses-table {
+  margin: var(--sm) 0;
+  padding: 0 calc(0.75 * var(--left-margin));
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--sm);
+}
+
+.budgets-show-budgets {
+  padding: var(--sm) var(--lg);
+  display: flex;
+  border-top: 2px solid gray;
+  border-bottom: 2px solid gray;
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  gap: var(--lg);
+}
+
+
+.budgets-main-h3 {
+  padding: 0 calc(0.75 * var(--left-margin));
 }
