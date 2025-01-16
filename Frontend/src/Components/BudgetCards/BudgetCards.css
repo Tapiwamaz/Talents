@@ -107,38 +107,37 @@
   transition: all ease-in 50ms;
 }
 .budget-create-category-btn:hover {
-    background-color: rgb(200, 200, 200);
+  background-color: rgb(200, 200, 200);
 }
 
 .active-btn {
-    background-color: rgb(200, 200, 200);
-    outline: 2px var(--primary) solid;
+  background-color: rgb(200, 200, 200);
+  outline: 2px var(--primary) solid;
 }
 
 /* Create Component end */
 
 /* Create Expenses */
 .expense-create-main {
-  flex: 0.5;
+  flex: 1;
   display: flex;
   gap: var(--xs);
   padding: var(--sm) var(--md);
   flex-direction: column;
   border-radius: var(--sm);
-  background-color: var(--background-second);
-}
-.budget-name {
-  color: var(--primary);
+  background-color: var(--background);
+  outline: 3px solid black;
+  max-width: calc(3 * var(--left-margin));
 }
 
-.expense-create-holder{
+.expense-create-holder {
   display: flex;
 }
 .expense-create-div {
   flex: 1;
   flex-direction: column;
   display: flex;
- gap: var(--xs);
+  gap: var(--xs);
 }
 
 .expense-create-label {
@@ -148,19 +147,22 @@
 
 /* Create Expenses */
 
-
 /* BudgetCard Main */
 .budgetCard-main {
   display: flex;
   flex-direction: column;
-  min-width: calc(1.6* var(--left-margin));
-  border: 2px solid var(--primary);
+  min-width: calc(2 * var(--left-margin));
+  height: fit-content;
+  outline: 3px solid var(--progress-colour);
+  outline-offset: -3px;
   gap: var(--xs);
   border-radius: var(--xs);
-  padding:  var(--sm) var(--md);
-  margin-bottom: var(--xs);
+  padding: var(--sm) var(--md);
   justify-content: center;
   align-items: center;
+  box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
+  -webkit-box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
+  -moz-box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
 }
 
 .description-line {
@@ -169,19 +171,38 @@
   align-items: center;
   width: 100%;
 }
+.budget-name {
+  color: var(--budget-colour);
+}
 .description-line p {
   font-size: 0.7rem;
 }
 
 .budget-progress {
   width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 15px;
+}
+
+.budget-progress::-webkit-progress-bar {
+  background-color: var(--background-second);
+}
+.budget-progress::-webkit-progress-value {
+  transition: all 150ms ease;
+  background-color: var(--progress-colour);
+}
+
+.budget-progress::-webkit-progress-bar,
+.budget-progress::-webkit-progress-value {
+  border-radius: var(--xs);
 }
 .budgetCard-btn {
   border: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: gray solid 2px;
+  outline: gray solid 3px;
   border-radius: var(--xs);
   color: var(--main-text);
   padding: var(--xs);
@@ -193,6 +214,11 @@
 .budgetCard-btn:visited {
   color: var(--main-text);
 }
-
+.budgetCard-btn:hover {
+  scale: 1.1;
+  outline: none;
+  color: white;
+  background-color: var(--progress-colour);
+}
 
 /* BudgetCard Main */

@@ -265,30 +265,32 @@ def get_budgets(user_id):
         cursor = connection.cursor()
         
         cursor.execute(""" 
-                        select (user_id,name,category,start_date,end_date,total_amount,budget_id) from budgets 
-                        WHERE user_id=%s ;
+                        select b.user_id,b.name, b.category,b.start_date,b.end_date,b.total_amount,b.budget_id, SUM(e.amount) as e_amount  from budgets b 
+                        left join expenses e on e.budget_id=b.budget_id 
+                        where b.user_id=%s group by b.budget_id,b.user_id,b.name;
                     """,
                         (str(user_id),)
                     )
         results = cursor.fetchall()
         connection.commit()
         
-        column_names = ["user_id","name","category","start_date","end_date","total_amount","budget_id"]
+        column_names = ["user_id","name","category","start_date","end_date","total_amount","budget_id","total_expenses"]
         if results:
             budgets = []
             for row in results:
-                line = row[0][1:len(row[0])-1].split(",")
-                print(line)
                 budget = {}
                 for i in range(0,len(column_names)):
                     if i==5:
-                        budget[column_names[i]] = float(line[i])
-                    elif i==1:
-                        budget[column_names[i]] = line[i][1:len(line[i])-1]
-                    elif i==1:
-                        budget[column_names[i]] = int(line[i])
+                            budget[column_names[i]] = float(row[i])
+                    elif i==6:
+                        budget[column_names[i]] = int(row[i])
+                    elif i==7:
+                        if row[i] == None: 
+                            budget[column_names[i]] = float(0)
+                        else:       
+                            budget[column_names[i]] = float(row[i])
                     else:    
-                        budget[column_names[i]] = line[i]        
+                        budget[column_names[i]] = row[i]        
                 budgets.append(budget)
                     
             return jsonify({"Budgets": budgets}), 200
@@ -303,46 +305,93 @@ def get_budgets(user_id):
             cursor.close()
         if connection:
             connection.close()
+
+@app.route('/api/expenses/create', methods=['POST'])
+def send_expenses():
+    req = request.get_json()
     
+    if "budget_id" not in req or "amount" not in req or "description" not in req:
+        return jsonify({"Error": "Not enought information provided"}),400
+    
+    budget_id = req["budget_id"]
+    amount = req["amount"]
+    description = req["description"]
+    
+    try: 
+        connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
+                                    user=DB.DB_CONFIG["user"],
+                                    host=DB.DB_CONFIG["host"],
+                                    password=DB.DB_CONFIG["password"])
+        cursor = connection.cursor()
+        
+        cursor.execute(""" 
+                        insert into expenses (budget_id,amount,description) 
+                        VALUES (%s, %s, %s) RETURNING expense_id,created_at;
+                    """,
+                        (budget_id,amount,description,)
+                    )
+        
+        results = cursor.fetchone()
+        expense_id = results[0]
+        connection.commit()
+        return jsonify({"expense": {"expense_id": expense_id, "date": results[1]} }), 200
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 401
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close() 
+
+        
 
 # get and create expenses
-@app.route('/api/expenses', methods=['GET', 'POST'])
-def expenses():
-    if request.method == 'POST':
-        req = request.get_json()
-        
-        if 'budget_id' not in req or 'amount' not in req or 'description' not in req:
-            return jsonify({"Error": "Not enough information"}),400
-        
-        budget_id = req["budget_id"]
-        amount = req["amount"] 
-        description = req["description"] 
-            
-        try: 
-            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                        user=DB.DB_CONFIG["user"],
-                                        host=DB.DB_CONFIG["host"],
-                                        password=DB.DB_CONFIG["password"])
-            cursor = connection.cursor()
-            
-            cursor.execute(""" 
-                                insert into expenses (budget_id,amount,description) 
-                                VALUES (%s, %s, %s) RETURNING expense_id
-                            """,
-                                (budget_id,amount,description,expense_date,)
-                            )
-            results = cursor.fetchone()  # Fetch a single row instead of fetchall()
-            expense_id = results[0]
-            connection.commit()
-            return jsonify({"expense_id":expense_id}), 200
+@app.route('/api/expenses/<user_id>', methods=['GET'])
+def expenses(user_id):
 
-        except Exception as e:
-            return jsonify({"Error": str(e)}), 401
-        finally:
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
+        
+    try: 
+        connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
+                                    user=DB.DB_CONFIG["user"],
+                                    host=DB.DB_CONFIG["host"],
+                                    password=DB.DB_CONFIG["password"])
+        cursor = connection.cursor()
+        
+        cursor.execute(""" 
+                            select e.expense_id,e.description,e.amount,e.created_at,b.budget_id from expenses e inner join budgets b on b.
+                            budget_id=e.budget_id where b.user_id=%s;
+                        """,
+                            (str(user_id),)
+                        )
+        results = cursor.fetchall()
+        connection.commit()
+        print(results)
+        
+        column_names = ["expense_id","description","amount","created_at","budget_id"]
+        if results:
+            Expenses = []
+            for row in results:
+                expense = {}
+                for i in range(0,len(column_names)):
+                    if i==2:
+                            expense[column_names[i]] = float(row[i])
+                    elif i==0 or i == 4:
+                        expense[column_names[i]] = int(row[i])
+                    else:    
+                        expense[column_names[i]] = row[i]        
+                Expenses.append(expense)
+                    
+            return jsonify({"Expenses": Expenses}), 200
+        else:
+            return jsonify({"Expenses": []}), 200
+
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 401
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
     
 if __name__ == '__main__':
     app.run(debug=True)    

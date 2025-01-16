@@ -4,29 +4,26 @@ import React, { useContext, useState } from "react";
 import "./Budgets.css";
 // components
 import CreateBudget from "../../Components/BudgetCards/CreateBudget";
+import ExpenseTable from "../../Components/ExpenseTable/ExpenseTable";
+import BudgetCard from "../../Components/BudgetCards/BudgetCard";
 // context
 import { AppContext } from "../../context/AppContext";
-import AddExpense from "../../Components/BudgetCards/AddExpense";
-import { ExpenseTable } from "../../Components/ExpenseTable/ExpenseTable";
-import { mockExpenses } from "../../Helpers/MockData";
-import BudgetCard from "../../Components/BudgetCards/BudgetCard";
-
-const budgetDict = {};
 
 const Budgets = () => {
-  // const [newBudget, setNewBudget] = useState({
-  //   budget_id: 8,
-  //   name: "Drip too hard",
-  //   category: "Leisure",
-  //   total_amount: 1000,
-  // });
-  const [newBudget, setNewBudget] = useState({})
+  const [newBudget, setNewBudget] = useState({});
   const [created, setCreated] = useState(false);
-  // const [created, setCreated] = useState(true);
 
-  const { user, allBudgets, setAllBudgets } = useContext(AppContext);
+  const {
+    user,
+    allBudgets,
+    loadingBooleans,
+    budgetDict,
+    allExpenses,
+    setAllBudgets,
+    setBudgetDict,
+  } = useContext(AppContext);
 
-  allBudgets.forEach((b) => (budgetDict[b.budget_id] = b.name));
+  console.log(loadingBooleans)
 
   return (
     <main className="budgets-main">
@@ -38,18 +35,32 @@ const Budgets = () => {
           createdB={created}
           setCreatedB={setCreated}
           setAllBudgets={setAllBudgets}
+          setBudgetDict={setBudgetDict}
         />
       </section>
 
       <h3 className="budgets-main-h3">Your budgets</h3>
       <section className="budgets-show-budgets">
-        {allBudgets.slice(0, 4).map((b) => (
-          <BudgetCard budget={b} />
-        ))}
+        {loadingBooleans.budgets &&
+          allBudgets &&
+          allBudgets.slice(0, 4).map((b) => <BudgetCard budget={b} />)}{" "}
+        {!loadingBooleans.budgets &&
+          [1, 2, 3].map((item) => (
+            <div key={item} className="loader-container">
+              <span className="loader" />
+            </div>
+          ))}
       </section>
       <section className="recent-expenses-table">
         <h3>Recent Expenses</h3>
-        <ExpenseTable expenses={mockExpenses} budgetDict={budgetDict} />
+        {loadingBooleans.expenses && allExpenses && (
+          <ExpenseTable expenses={allExpenses} budgetDict={budgetDict} />
+        )}
+        {!loadingBooleans.expenses && (
+          <div className="loader-table-container">
+            <span className="loader" />
+          </div>
+        )}
       </section>
     </main>
   );

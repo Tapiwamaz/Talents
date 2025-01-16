@@ -1,7 +1,7 @@
 const mockExpenses = [
     {
       "expense_id": 1,
-      "budget_id": 1,
+      "budget_id": 12,
       "description": "Weekly groceries at Walmart",
       "amount": 120.50,
       "expense_date": "2025-01-03",
@@ -9,7 +9,7 @@ const mockExpenses = [
     },
     {
       "expense_id": 2,
-      "budget_id": 1,
+      "budget_id": 10,
       "description": "Vegetables and fruits at Farmer's Market",
       "amount": 45.75,
       "expense_date": "2025-01-10",
@@ -17,7 +17,7 @@ const mockExpenses = [
     },
     {
       "expense_id": 3,
-      "budget_id": 2,
+      "budget_id": 8,
       "description": "Monthly apartment rent",
       "amount": 1200.00,
       "expense_date": "2025-01-01",
@@ -25,7 +25,7 @@ const mockExpenses = [
     },
     {
       "expense_id": 4,
-      "budget_id": 3,
+      "budget_id": 8,
       "description": "Car oil change",
       "amount": 80.00,
       "expense_date": "2025-01-20",
@@ -33,7 +33,7 @@ const mockExpenses = [
     },
     {
       "expense_id": 5,
-      "budget_id": 3,
+      "budget_id": 10,
       "description": "Tire replacement",
       "amount": 220.00,
       "expense_date": "2025-01-25",
@@ -41,7 +41,7 @@ const mockExpenses = [
     },
     {
       "expense_id": 6,
-      "budget_id": 4,
+      "budget_id": 12,
       "description": "Movie night",
       "amount": 25.00,
       "expense_date": "2025-01-05",
@@ -49,23 +49,23 @@ const mockExpenses = [
     },
     {
       "expense_id": 7,
-      "budget_id": 4,
+      "budget_id": 12,
       "description": "Concert tickets",
       "amount": 100.00,
       "expense_date": "2025-01-15",
       "created_at": "2025-01-15T20:00:00"
     },
     {
-      "expense_id": 8,
-      "budget_id": 5,
+      "expense_id": 111,
+      "budget_id": 10,
       "description": "Dinner at Olive Garden",
       "amount": 60.00,
       "expense_date": "2025-01-12",
       "created_at": "2025-01-12T18:00:00"
     },
     {
-      "expense_id": 9,
-      "budget_id": 5,
+      "expense_id": 8,
+      "budget_id": 10,
       "description": "Coffee and snacks at Starbucks",
       "amount": 15.00,
       "expense_date": "2025-01-13",
@@ -73,30 +73,30 @@ const mockExpenses = [
     },
     {
       "expense_id": 10,
-      "budget_id": 6,
+      "budget_id": 12,
       "description": "Flight tickets",
       "amount": 1500.00,
       "expense_date": "2025-06-01",
       "created_at": "2025-06-01T08:00:00"
     },
     {
-      "expense_id": 11,
-      "budget_id": 6,
+      "expense_id": 12,
+      "budget_id": 12,
       "description": "Hotel booking",
       "amount": 800.00,
       "expense_date": "2025-06-05",
       "created_at": "2025-06-05T10:00:00"
     },
     {
-      "expense_id": 12,
-      "budget_id": 7,
+      "expense_id": 22,
+      "budget_id": 10,
       "description": "Monthly health insurance premium",
       "amount": 100.00,
       "expense_date": "2025-01-01",
       "created_at": "2025-01-01T08:30:00"
     },
     {
-      "expense_id": 13,
+      "expense_id": 10,
       "budget_id": 8,
       "description": "Electricity bill",
       "amount": 120.00,
@@ -104,7 +104,7 @@ const mockExpenses = [
       "created_at": "2025-01-05T14:00:00"
     },
     {
-      "expense_id": 14,
+      "expense_id": 12,
       "budget_id": 8,
       "description": "Internet subscription",
       "amount": 80.00,
@@ -113,7 +113,7 @@ const mockExpenses = [
     },
     {
       "expense_id": 15,
-      "budget_id": 9,
+      "budget_id": 8,
       "description": "Monthly gym membership fee",
       "amount": 50.00,
       "expense_date": "2025-01-01",

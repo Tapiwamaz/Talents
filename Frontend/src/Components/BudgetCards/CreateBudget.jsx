@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toInputFormat } from "../../Helpers/DateTimeFormatters";
 import "./BudgetCards.css";
 import toast from "react-hot-toast";
+import { chooseColour } from "../../Helpers/Colours";
 
 const handleChange = (change, type, setNewBudget) => {
   setNewBudget((prev) => {
@@ -17,6 +18,7 @@ const sendBudget = async ({
   setNewBudget,
   setCreatedB,
   setAllBudgets,
+  setBudgetDict,
 }) => {
   const formData = {
     sub: sub,
@@ -45,8 +47,21 @@ const sendBudget = async ({
     }
     console.log(data);
     formData.budget_id = data.budget_id;
-    setNewBudget(formData);
-    setAllBudgets((prev) => [formData, ...prev]);
+    formData.total_expenses = 0.0;
+
+    setAllBudgets((prev) => {
+      formData.colour = chooseColour(prev.length);
+      setBudgetDict((t) => {
+        let temp = t;
+        temp[formData.budget_id] = {
+          name: formData.name,
+          colour: chooseColour(prev.length),
+        };
+        return temp;
+      });
+      setNewBudget(formData);
+      return [formData, ...prev];
+    });
     setCreatedB(true);
 
     return response;
@@ -61,8 +76,9 @@ const handleSubmit = async ({
   setNewBudget,
   setCreatedB,
   setAllBudgets,
+  setBudgetDict
 }) => {
-  console.log(newBudget)
+  console.log(newBudget);
   if (
     !sub ||
     !newBudget ||
@@ -82,6 +98,7 @@ const handleSubmit = async ({
     setNewBudget: setNewBudget,
     setCreatedB: setCreatedB,
     setAllBudgets: setAllBudgets,
+    setBudgetDict: setBudgetDict
   });
 
   toast.promise(myPromise, {
@@ -108,6 +125,7 @@ const CreateBudget = ({
   setCreatedB,
   createdB,
   setAllBudgets,
+  setBudgetDict
 }) => {
   const [activeCategory, setActiveCategory] = useState(-1);
   return (
@@ -231,6 +249,7 @@ const CreateBudget = ({
               setNewBudget: setNewBudget,
               setCreatedB: setCreatedB,
               setAllBudgets: setAllBudgets,
+              setBudgetDict: setBudgetDict
             });
           }}
         >

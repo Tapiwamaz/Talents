@@ -1,18 +1,18 @@
 .expense-table {
-    border-collapse: collapse;
+  border-collapse: collapse;
 }
 .expense-table th {
   text-align: left;
   background-color: var(--background-second);
 }
- 
-.expense-table thead th:nth-of-type(1){
-  border-radius: var(--xs) 0 0 0 ;
+
+.expense-table thead th:nth-of-type(1) {
+  border-radius: var(--xs) 0 0 0;
 }
-.expense-table thead th:last-of-type{
-    border-radius: 0 var(--xs)  0 0 ;
-    text-align: center;
-  }
+.expense-table thead th:last-of-type {
+  border-radius: 0 var(--xs) 0 0;
+  text-align: center;
+}
 
 .expense-table th,
 .expense-table td {
@@ -21,25 +21,33 @@
 }
 
 .expense-table tr:nth-child(even) {
-    background-color: var(--background);
+  background-color: var(--background);
 }
 
 .expense-table tr:last-of-type td:first-of-type {
-    border-radius:   0 0 0 var(--sm);
+  border-radius: 0 0 0 var(--sm);
 }
-.expense-table tr:last-of-type td:last-of-type{
-    border-radius:    0 0 var(--sm) 0;
+.expense-table tr:last-of-type td:last-of-type {
+  border-radius: 0 0 var(--sm) 0;
 }
 
 .expense-table-button {
-    margin: auto ;
-    background-color: aqua;
-    width: fit-content;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--sm);
-    border-radius: var(--lg);
-    height: var(--md);
-    cursor: pointer;
+  margin: auto;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sm);
+  border-radius: var(--sm);
+  outline: var(--budget-colour) solid 4px;
+  height: var(--md);
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+.expense-table-button:hover {
+  scale: 1.05;
+  outline: none;
+  background-color: var(--budget-colour);
+  color: white;
+
 }
