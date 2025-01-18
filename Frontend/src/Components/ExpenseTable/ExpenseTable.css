@@ -1,15 +1,22 @@
 .expense-table {
   border-collapse: collapse;
+  border-radius: var(--sm);
+  box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
+  -webkit-box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
+  -moz-box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
 }
 .expense-table th {
   text-align: left;
   background-color: var(--background-second);
 }
+.expense-table th:nth-of-type(4) {
+  text-align: center;
+}
 
-.expense-table thead th:nth-of-type(1) {
+.expense-table tr th:nth-of-type(1) {
   border-radius: var(--xs) 0 0 0;
 }
-.expense-table thead th:last-of-type {
+.expense-table tr th:last-of-type {
   border-radius: 0 var(--xs) 0 0;
   text-align: center;
 }
@@ -19,6 +26,10 @@
   height: var(--md);
   padding: var(--xs);
 }
+.expense-table th {
+  height: var(--lg);
+}
+
 
 .expense-table tr:nth-child(even) {
   background-color: var(--background);
@@ -49,5 +60,23 @@
   outline: none;
   background-color: var(--budget-colour);
   color: white;
+}
 
+.expense-table-trash {
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  background-color: inherit;
+  border: none;
+  display: flex;
+  transition: all 150ms ease-in-out; ;
+}
+
+.expense-table-trash-btn{
+  cursor: pointer;
+}
+
+.expense-table-trash-btn:hover {
+  color: red;
+  scale: 1.1;
 }

@@ -9,7 +9,7 @@ const sendExpense = async ({
   newExpense,
   setNewExpense,
   setAllExpenses,
-  setBudget,
+  setAllBudgets,
 }) => {
   const formData = {
     budget_id: budget.budget_id,
@@ -17,7 +17,7 @@ const sendExpense = async ({
     amount: newExpense.amount,
   };
   try {
-    const response = await fetch("http://localhost:5000/api/expenses/create", {
+    const response = await fetch("http://localhost:5000/api/expenses", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,20 +32,22 @@ const sendExpense = async ({
     if (!data.expense) {
       throw new Error("Something went wrong creating expense");
     }
-    console.log(data);
+    // console.log(data);
     formData.expense_id = data.expense.expense_id;
     formData.expense_date = toInputFormat(new Date());
     setNewExpense({});
     setAllExpenses((prev) => [formData, ...prev]);
 
     // add to the budgets total_expense
-    // console.log(budget);
-    setBudget((prev) => {
-      let temp = prev;
-      temp.total_expenses =
-        parseFloat(temp.total_expenses) + parseFloat(formData.amount);
-      return temp;
+
+    setAllBudgets((prev) => {
+      prev[budget.budget_id].total_expenses =
+        parseFloat(prev[budget.budget_id].total_expenses) +
+        parseFloat(formData.amount) / 2;
+
+      return prev;
     });
+  
 
     return response;
   } catch (e) {
@@ -59,7 +61,7 @@ const handleSubmit = async ({
   newExpense,
   setAllExpenses,
   setNewExpense,
-  setBudget,
+  setAllBudgets,
 }) => {
   if (
     !budget ||
@@ -77,7 +79,7 @@ const handleSubmit = async ({
     newExpense: newExpense,
     setAllExpenses: setAllExpenses,
     setNewExpense: setNewExpense,
-    setBudget: setBudget,
+    setAllBudgets: setAllBudgets,
   });
 
   toast.promise(myPromise, {
@@ -95,10 +97,10 @@ const handleChange = (change, type, setExpense) => {
   });
 };
 
-const AddExpense = ({ budget, setBudget }) => {
+const AddExpense = ({ budget }) => {
   const [expense, setExpense] = useState({});
 
-  const { setAllExpenses } = useContext(AppContext);
+  const { setAllExpenses, setAllBudgets } = useContext(AppContext);
   if (budget) {
     return (
       <main className="expense-create-main">
@@ -150,7 +152,7 @@ const AddExpense = ({ budget, setBudget }) => {
                 newExpense: expense,
                 setAllExpenses: setAllExpenses,
                 setNewExpense: setExpense,
-                setBudget: setBudget,
+                setAllBudgets: setAllBudgets,
               })
             }
           >

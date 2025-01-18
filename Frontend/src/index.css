@@ -18,8 +18,11 @@
   --background: whitesmoke;
   --background-second: rgb(200, 200, 200);
 
+  --box-shadow:  -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
+
   /* Margins */
   --left-margin: calc(100vw / 7);
+
 }
 body {
   font-family: "Coustard", serif;

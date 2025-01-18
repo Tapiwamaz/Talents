@@ -23,7 +23,7 @@ const Budgets = () => {
     setBudgetDict,
   } = useContext(AppContext);
 
-  console.log(loadingBooleans)
+  const keys = Object.keys(allBudgets);
 
   return (
     <main className="budgets-main">
@@ -39,11 +39,16 @@ const Budgets = () => {
         />
       </section>
 
-      <h3 className="budgets-main-h3">Your budgets</h3>
+      <h1 className="budgets-main-h3">Your budgets</h1>
+      {loadingBooleans.budgets && keys.length === 0 && <h2 className="budgets-main-h3">No budgets</h2>}
+
       <section className="budgets-show-budgets">
         {loadingBooleans.budgets &&
-          allBudgets &&
-          allBudgets.slice(0, 4).map((b) => <BudgetCard budget={b} />)}{" "}
+          keys.length > 0 &&
+          keys
+            .map((key) => (
+              <BudgetCard key={key} budget={allBudgets[key]} />
+            ))}{" "}
         {!loadingBooleans.budgets &&
           [1, 2, 3].map((item) => (
             <div key={item} className="loader-container">
@@ -52,7 +57,7 @@ const Budgets = () => {
           ))}
       </section>
       <section className="recent-expenses-table">
-        <h3>Recent Expenses</h3>
+        <h1 className="budgets-main-h1">Recent Expenses</h1>
         {loadingBooleans.expenses && allExpenses && (
           <ExpenseTable expenses={allExpenses} budgetDict={budgetDict} />
         )}

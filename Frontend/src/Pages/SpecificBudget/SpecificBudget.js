@@ -13,16 +13,13 @@ import AddExpense from "../../Components/BudgetCards/AddExpense";
 const SpecificBudget = () => {
   const { budget_id } = useParams();
 
-  const { budgetDict, allBudgets, allExpenses, loadingBooleans } =
+  const { budgetDict, allExpenses, loadingBooleans, allBudgets } =
     useContext(AppContext);
-  const [budget, setBudget] = useState({});
+  
 
-  useEffect(() => {
-    setBudget(allBudgets.filter((b) => b.budget_id === parseInt(budget_id))[0]);
-  }, []);
 
   if (!loadingBooleans.budgets) {
-    return <Navigate to={"/budgets"} replace/>;
+    return <Navigate to={"/budgets"} replace />;
   } else {
     return (
       <main
@@ -30,16 +27,16 @@ const SpecificBudget = () => {
         style={{ "--budget-colour": budgetDict[budget_id].colour }}
       >
         <h1>
-          <strong className="budget-name">{budgetDict[budget_id].name}</strong>{" "}
-          Overview
+          <strong className="budget-name">{budgetDict[budget_id].name}</strong> overview
         </h1>
         <section className="specific-budget-details">
-          <BudgetCard budget={budget} />
-          <AddExpense budget={budget} setBudget={setBudget} />
+          <BudgetCard budget={allBudgets[budget_id]} />
+          <AddExpense budget={allBudgets[budget_id]} />
         </section>
         <h1>Expenses</h1>
         <section className="recent-expenses-table">
           <ExpenseTable
+          specificBudget={true}
             expenses={allExpenses.filter(
               (e) => e.budget_id === parseInt(budget_id)
             )}

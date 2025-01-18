@@ -1,6 +1,7 @@
 import "./Profile.css";
 // react
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router";
 // auth
 import { googleLogout } from "@react-oauth/google";
 //context
@@ -13,6 +14,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { UserIcon } from "@heroicons/react/24/solid";
 import Modal from "../../Components/Modal/Modal";
+import { toCuteFormat } from "../../Helpers/DateTimeFormatters";
 
 // functions
 const logoutClickHandler = (
@@ -22,7 +24,13 @@ const logoutClickHandler = (
   setTransactions,
   setFetchedTransactions,
   setSummaryData,
-  setLoaded
+  setLoaded,
+  setLoadingBooleans,
+  setBudgetDict,
+  setAllExpenses,
+  setUploadedTrans,
+  setAllBudgets,
+  nav
 ) => {
   googleLogout();
   setUserInfo({});
@@ -32,28 +40,42 @@ const logoutClickHandler = (
   setTransactions([]);
   setFetchedTransactions([]);
   setSummaryData({});
+  setAllBudgets([]); 
+  setAllExpenses([]);
+  setBudgetDict({})
+  setUploadedTrans([])
+  setLoadingBooleans({ budgets: false, expenses: false, transactions: false });
+
+  return nav("/");
 };
 
 const Profile = () => {
   let exampleArr = [1, 2];
 
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const {
     user,
     setUser,
+    summaryData,
     setLoggedIn,
     setAllTransactions,
     setFetchedTransactions,
     setSummaryData,
     setTransactions,
     setLoaded,
+    setLoadingBooleans,
+    setBudgetDict,
+    setAllExpenses,
+    setUploadedTrans,
+    setAllBudgets,
   } = useContext(AppContext);
-
+  console.log(summaryData)
   return (
     <main className="profile-main">
       <section className="profile-top-section">
-        {!user.picture ? (
+        {user.picture ? (
           <img
             alt="profile-picture"
             src={user.picture}
@@ -74,7 +96,13 @@ const Profile = () => {
                 setTransactions,
                 setFetchedTransactions,
                 setSummaryData,
-                setLoaded
+                setLoaded,
+                setLoadingBooleans,
+                setBudgetDict,
+                setAllExpenses,
+                setUploadedTrans,
+                setAllBudgets,
+                navigate
               );
             }}
             className="profile-logout-button"
@@ -101,18 +129,18 @@ const Profile = () => {
                 ))}
               </div>
               <p>Transactions</p>
-              <text>10000</text>
+              <text>{summaryData.number_of_transactions}</text>
             </div>
 
             <div className="summary-subcard">
               <p>Statements</p>
               <div className="icon-holder">
-                {exampleArr.slice(0, 5).map((s) => (
-                  <DocumentCheckIcon className="subcard-icon" />
+                {summaryData.statements.map((s) => (
+                  <DocumentCheckIcon key={s} className="subcard-icon" />
                 ))}
               </div>
               <p>Dates</p>
-              <text>12 Aug 2024 to 12 Feb 2025</text>
+              <text>{toCuteFormat(summaryData.start_date)} to {toCuteFormat(summaryData.end_date)}</text>
             </div>
           </div>
         </div>
@@ -148,14 +176,14 @@ const Profile = () => {
       </section>
       <Modal onClose={() => setOpen(false)} open={open}>
         <ExclamationTriangleIcon className="modal-icon" />
-        <h3 className="modal-title">
-          Clear All 
-        </h3>
+        <h3 className="modal-title">Clear All</h3>
         <text className="modal-subtitle">
           Once deleted, no information can be retrieved. Are you sure?
         </text>
         <div className="modal-button-holder">
-          <button className="modal-btn" onClick={() => setOpen(false)}>No, Keep it!</button>
+          <button className="modal-btn" onClick={() => setOpen(false)}>
+            No, Keep it!
+          </button>
           <button className="modal-btn btn-yes">Yes, Delete!</button>
         </div>
       </Modal>

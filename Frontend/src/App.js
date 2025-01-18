@@ -28,9 +28,9 @@ const router = createBrowserRouter(
       <Route path="budgets" element={<Budgets />}></Route>
       <Route path="budgets/:budget_id" element={<SpecificBudget/>} ></Route>
 
-      {/* <Route path="reports" element={<Reports />}></Route> */}
-      {/* <Route path="news" element={<News />}></Route> */}
-      {/* <Route path="summaries" element={<Summaries />}></Route> */}
+      <Route path="reports" element={<Reports />}></Route>
+      <Route path="news" element={<News />}></Route>
+      <Route path="summaries" element={<Summaries />}></Route>
       <Route path="profile" element={<Profile />}></Route>
     </Route>
   )

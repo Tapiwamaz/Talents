@@ -306,8 +306,9 @@ def get_budgets(user_id):
         if connection:
             connection.close()
 
-@app.route('/api/expenses/create', methods=['POST'])
-def send_expenses():
+@app.route('/api/expenses', methods=['POST'])
+def expenses():
+    
     req = request.get_json()
     
     if "budget_id" not in req or "amount" not in req or "description" not in req:
@@ -343,55 +344,84 @@ def send_expenses():
         if connection:
             connection.close() 
 
-        
 
 # get and create expenses
-@app.route('/api/expenses/<user_id>', methods=['GET'])
-def expenses(user_id):
+@app.route('/api/expenses/<id>', methods=['GET', 'DELETE'])
+def get_expenses(id):
 
-        
-    try: 
-        connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                    user=DB.DB_CONFIG["user"],
-                                    host=DB.DB_CONFIG["host"],
-                                    password=DB.DB_CONFIG["password"])
-        cursor = connection.cursor()
-        
-        cursor.execute(""" 
-                            select e.expense_id,e.description,e.amount,e.created_at,b.budget_id from expenses e inner join budgets b on b.
-                            budget_id=e.budget_id where b.user_id=%s;
-                        """,
-                            (str(user_id),)
-                        )
-        results = cursor.fetchall()
-        connection.commit()
-        print(results)
-        
-        column_names = ["expense_id","description","amount","created_at","budget_id"]
-        if results:
-            Expenses = []
-            for row in results:
-                expense = {}
-                for i in range(0,len(column_names)):
-                    if i==2:
-                            expense[column_names[i]] = float(row[i])
-                    elif i==0 or i == 4:
-                        expense[column_names[i]] = int(row[i])
-                    else:    
-                        expense[column_names[i]] = row[i]        
-                Expenses.append(expense)
-                    
-            return jsonify({"Expenses": Expenses}), 200
-        else:
-            return jsonify({"Expenses": []}), 200
+    if request.method == 'GET':
+        try: 
+            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
+                                        user=DB.DB_CONFIG["user"],
+                                        host=DB.DB_CONFIG["host"],
+                                        password=DB.DB_CONFIG["password"])
+            cursor = connection.cursor()
+            
+            cursor.execute(""" 
+                                select e.expense_id,e.description,e.amount,e.created_at,b.budget_id from expenses e inner join budgets b on 
+                                b.budget_id=e.budget_id where b.user_id=%s  order by e.created_at desc;
+                            """,
+                                (str(id),)
+                            )
+            results = cursor.fetchall()
+            connection.commit()
+            
+            column_names = ["expense_id","description","amount","created_at","budget_id"]
+            if results:
+                Expenses = []
+                for row in results:
+                    expense = {}
+                    for i in range(0,len(column_names)):
+                        if i==2:
+                                expense[column_names[i]] = float(row[i])
+                        elif i==0 or i == 4:
+                            expense[column_names[i]] = int(row[i])
+                        else:    
+                            expense[column_names[i]] = row[i]        
+                    Expenses.append(expense)
+                        
+                return jsonify({"Expenses": Expenses}), 200
+            else:
+                return jsonify({"Expenses": []}), 200
 
-    except Exception as e:
-        return jsonify({"Error": str(e)}), 401
-    finally:
-        if cursor:
-            cursor.close()
-        if connection:
-            connection.close()
+        except Exception as e:
+            return jsonify({"Error": str(e)}), 401
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+                
+    elif request.method == 'DELETE':
+        try:
+           int(id)
+        except Exception as e:
+            return jsonify({"Error": "Expense id invalid"}),404   
+
+        try: 
+            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
+                                        user=DB.DB_CONFIG["user"],
+                                        host=DB.DB_CONFIG["host"],
+                                        password=DB.DB_CONFIG["password"])
+            cursor = connection.cursor()
+            
+            cursor.execute(""" 
+                                delete from expenses where expense_id=%s;
+                            """,
+                                (id,)
+                            )
+            connection.commit()
+
+            return "Expense successfuly deleted", 200
+
+
+        except Exception as e:
+            return jsonify({"Error": str(e)}), 401
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
     
 if __name__ == '__main__':
     app.run(debug=True)    

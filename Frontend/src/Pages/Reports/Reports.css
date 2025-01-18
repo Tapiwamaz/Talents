@@ -1,0 +1,20 @@
+.reports-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.reports-section {
+  display: flex;
+}
+
+.top-section {
+  padding: var(--sm) var(--left-margin);
+  gap: var(--md);
+}
+
+.top-section .summary-card:nth-of-type(3) h1 {
+    color: red;
+}
+.top-section .summary-card:nth-of-type(2) h1 {
+    color: green;
+}

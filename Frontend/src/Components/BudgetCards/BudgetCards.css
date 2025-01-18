@@ -8,6 +8,9 @@
   flex-direction: column;
   border-radius: var(--sm);
   background-color: var(--background);
+  box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
+  -webkit-box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
+  -moz-box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
 }
 .subtitle {
   font-weight: normal;
@@ -69,8 +72,8 @@
 .budget-create-btn-holder {
   display: flex;
   justify-content: space-between;
-  /* outline: 1px gray solid; */
 }
+
 .budget-create-btn {
   font-family: inherit;
   border: none;
@@ -89,8 +92,15 @@
 }
 
 .budget-create-btn:hover {
-  scale: 1.05;
+  scale: 1.1;
 }
+.budget-create-btn-holder .budget-create-btn:nth-of-type(1):hover {
+  background-color: var(--main-text);
+  color: white;
+  scale: 1.1;
+  outline: none;
+}
+
 
 .budget-create-categories {
   display: flex;
@@ -114,6 +124,7 @@
   background-color: rgb(200, 200, 200);
   outline: 2px var(--primary) solid;
 }
+
 
 /* Create Component end */
 

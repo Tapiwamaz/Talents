@@ -13,7 +13,7 @@ const BudgetCard = ({ budget }) => {
           >
             {budget.name}
           </h3>
-          <text>{toCurrency(budget.total_amount)}</text>
+          <p>{toCurrency(budget.total_amount)}</p>
         </div>
 
         <progress

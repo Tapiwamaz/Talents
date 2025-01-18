@@ -1,0 +1,23 @@
+/* summary card */
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--box-shadow);
+  width: calc(1.3 * var(--left-margin));
+  height: 20vh;
+  padding: var(--xs) var(--sm);
+  border-radius: var(--sm);
+  background-color: var(--background);
+  gap: var(--sm);
+  justify-content: center;
+}
+.summary-card h2 {
+    font-size: 1.4rem;
+}
+
+.summary-card h1 {
+    font-weight: normal;
+    color: var(--color-text);
+}
+
+/* summary card */

@@ -5,6 +5,7 @@ import "./Table.css";
 import { toCurrency, toMonth } from "../Helpers/TextAndNumberFomats";
 // icons
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+// import { ArrowLeft} from "@heroicons/react/24/solid";
 
 // Functions
 const loadMore = (arraySize, setNewEnd) => {
@@ -92,6 +93,7 @@ export const Table = ({ transactions, searchBool, summaryData }) => {
             >
               <ArrowRightIcon width={15} />
             </button>
+            <p>{transactions.length} rows</p>
           </div>
           <h2>
             Key <p className="key-hint">(Hover over transaction to see)</p>
@@ -114,12 +116,37 @@ export const Table = ({ transactions, searchBool, summaryData }) => {
 
         <section className="table-aside">
           <h2>Key points</h2>
-          <p>Initial Balance: {toCurrency(summaryData.initial_balance)}</p>
-          <p>Money In: {toCurrency(summaryData.running_credits)}</p>
-          <p>Money Out: {toCurrency(summaryData.running_debits)}</p>
-          <p>Bank fees: {toCurrency(summaryData.running_charges)}</p>
-          <p>Balance: {toCurrency(summaryData.running_balance)}</p>
-          <br></br>
+          <table className="aside-table-holder" cellPadding={0} cellSpacing={0}>
+            <tbody
+              className="aside-table-tbody"
+              style={
+                summaryData.running_balance > 0
+                  ? { "--balance": "green" }
+                  : { "--balance": "red" }
+              }
+            >
+              <tr>
+                <td>Initial Balance</td>
+                <td>{toCurrency(summaryData.initial_balance)}</td>{" "}
+              </tr>
+              <tr>
+                <td>Money In</td>
+                <td>{toCurrency(summaryData.running_credits)}</td>{" "}
+              </tr>
+              <tr>
+                <td>Money Out</td>
+                <td>{toCurrency(summaryData.running_debits)}</td>{" "}
+              </tr>
+              <tr>
+                <td>Bank fees</td>
+                <td>{toCurrency(summaryData.running_charges)}</td>{" "}
+              </tr>
+              <tr>
+                <td>Balance</td>
+                <td>{toCurrency(summaryData.running_balance)}</td>{" "}
+              </tr>
+            </tbody>
+          </table>
         </section>
       </aside>
     </main>

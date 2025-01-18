@@ -39,7 +39,7 @@ const fetch_transactions = async (
       console.error(data);
       throw new Error("Something went wrong fetching transactions");
     }
-    console.log("Successfully fetched transactions", data.transactions);
+
     if (data.transactions.length > 0) {
       let temp = add_dates(data.transactions);
       setFetchedTransactions(temp);
@@ -48,9 +48,19 @@ const fetch_transactions = async (
       // there will be a need for a more complex calc here
       setSummaryData(create_summary_data(temp));
       setLoaded(true);
+      setLoadingBooleans((prev) => {
+        let temp = prev;
+        temp.transactions = true;
+        return temp;
+      });
     }
   } catch (e) {
     console.error("Couldn't fetch transactions", e);
+    setLoadingBooleans((prev) => {
+      let temp = prev;
+      temp.transactions = true;
+      return temp;
+    });
 
     // throw new Error("Error ", e);
   }
@@ -58,9 +68,9 @@ const fetch_transactions = async (
 
 const fetch_budgets = async (
   user,
-  setAllBudgets,
   setBudgetDict,
-  setLoadingBooleans
+  setLoadingBooleans,
+  setAllBudgets
 ) => {
   try {
     const response = await fetch(
@@ -77,7 +87,6 @@ const fetch_budgets = async (
       const data = await response.json();
       let budgets = data.Budgets;
       budgets.forEach((b, index) => (b.colour = chooseColour(index)));
-      setAllBudgets(budgets);
       setBudgetDict((p) => {
         let budgetDict = {};
         budgets.forEach((b) => {
@@ -86,26 +95,29 @@ const fetch_budgets = async (
         return budgetDict;
       });
 
+      let budgets2 = {};
+      budgets.forEach((b) => {
+        budgets2[b.budget_id] = b;
+      });
+      setAllBudgets(budgets2);
+
       setLoadingBooleans((prev) => {
         let t = prev;
         t.budgets = true;
-        console.log(t)
         return t;
       });
-      
     }
   } catch (e) {
     console.log("Error fetching budgets", e);
     setLoadingBooleans((prev) => {
       let t = prev;
       t.budgets = true;
-     
       return t;
     });
   }
 };
 
-const fetch_expenses = async (user, setAllExpenses, setLoadingBooleans) => {
+const fetch_expenses = async (user,  setAllExpenses, setLoadingBooleans) => {
   try {
     const response = await fetch(
       `http://localhost:5000/api/expenses/${user.sub}`,
@@ -141,8 +153,10 @@ const fetch_expenses = async (user, setAllExpenses, setLoadingBooleans) => {
           new Date(dateArr[2], months[dateArr[1]], dateArr[0])
         );
       });
-      console.log(expenses);
+
+
       setAllExpenses(expenses);
+
       setLoadingBooleans((prev) => {
         let t = prev;
         t.expenses = true;
@@ -165,7 +179,7 @@ const AppContextProvider = (props) => {
     surname: "Mazarura",
     picture: "https://picsum.photos/200",
     email: "mazarura@gmail.com",
-    sub: "103347596905743041374",
+    sub: "117604033210378294446",
   });
 
   const [loaded, setLoaded] = useState(false);
@@ -177,7 +191,7 @@ const AppContextProvider = (props) => {
   const [summaryData, setSummaryData] = useState({});
 
   const [allBudgets, setAllBudgets] = useState([]);
-  const [allExpenses, setAllExpenses] = useState([]);
+  const [allExpenses, setAllExpenses] = useState({});
   const [budgetDict, setBudgetDict] = useState({});
   const [loadingBooleans, setLoadingBooleans] = useState({
     budgets: false,
@@ -197,10 +211,11 @@ const AppContextProvider = (props) => {
           setFetchedTransactions,
           setLoaded,
           setTransactions,
-          setSummaryData
+          setSummaryData,
+          setLoadingBooleans
         );
-        fetch_budgets(user, setAllBudgets, setBudgetDict,setLoadingBooleans);
-        fetch_expenses(user, setAllExpenses, setLoadingBooleans);
+        fetch_budgets(user, setBudgetDict, setLoadingBooleans, setAllBudgets);
+        fetch_expenses(user, setAllExpenses , setLoadingBooleans);
       }
     },
     [loggedIn, user]
@@ -215,10 +230,11 @@ const AppContextProvider = (props) => {
     summaryData,
     fetchedTransactions,
     uploadedTrans,
-    allBudgets,
     budgetDict,
     allExpenses,
     loadingBooleans,
+    allBudgets,
+    setAllBudgets,
     setLoadingBooleans,
     setUser,
     setLoggedIn,
@@ -228,7 +244,6 @@ const AppContextProvider = (props) => {
     setLoaded,
     setSummaryData,
     setFetchedTransactions,
-    setAllBudgets,
     setAllExpenses,
     setBudgetDict,
   };

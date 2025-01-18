@@ -61,16 +61,20 @@ const RootLayout = () => {
                 Summaries
               </NavLink>
             </li>
-            <li>
-              <NavLink to={"budgets"} className="root-navlink">
-                Budgets
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to={"reports"} className="root-navlink">
-                Reports
-              </NavLink>
-            </li>
+            {loggedIn && (
+              <li>
+                <NavLink to={"budgets"} className="root-navlink">
+                  Budgets
+                </NavLink>
+              </li>
+            )}
+            {loggedIn && (
+              <li>
+                <NavLink to={"reports"} className="root-navlink">
+                  Reports
+                </NavLink>
+              </li>
+            )}
             <li>
               <NavLink to={"news"} className="root-navlink">
                 News

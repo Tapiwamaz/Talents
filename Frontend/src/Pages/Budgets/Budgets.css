@@ -7,7 +7,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--xs);
+  padding: var(--md) 0;
   gap: var(--xs);
 }
 .budgets-create-section > main {
@@ -27,14 +27,13 @@
   padding: var(--sm) var(--lg);
   display: flex;
   flex-wrap: nowrap;
-  overflow-x: scroll;
+  overflow-x: auto;
   gap: var(--lg);
-  min-height: var(--left-margin);
-  /* border: 1px solid black; */
 }
 
 .loader-container {
   min-width: calc(2 * var(--left-margin));
+  min-height: calc(1* var(--left-margin));
 }
 .loader-table-container {
   min-height: 55vh;
@@ -52,4 +51,7 @@
 
 .budgets-main-h3 {
   padding: 0 calc(0.75 * var(--left-margin));
+}
+.budgets-main-h1 {
+  font-size: 2rem;
 }
