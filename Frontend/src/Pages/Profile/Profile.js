@@ -39,13 +39,12 @@ const logoutClickHandler = (
   setAllTransactions([]);
   setTransactions([]);
   setFetchedTransactions([]);
-  setSummaryData({});
-  setAllBudgets([]); 
+  setSummaryData({ statements: [] });
+  setAllBudgets([]);
   setAllExpenses([]);
-  setBudgetDict({})
-  setUploadedTrans([])
+  setBudgetDict({});
+  setUploadedTrans([]);
   setLoadingBooleans({ budgets: false, expenses: false, transactions: false });
-
   return nav("/");
 };
 
@@ -71,7 +70,7 @@ const Profile = () => {
     setUploadedTrans,
     setAllBudgets,
   } = useContext(AppContext);
-  console.log(summaryData)
+  console.log(summaryData);
   return (
     <main className="profile-main">
       <section className="profile-top-section">
@@ -109,8 +108,8 @@ const Profile = () => {
           />
         </div>
       </section>
+      <div className="divider-line"/>
 
-      <div className="divider-line" />
 
       <section className="profile-mid-section">
         <div className="upload-summary-card">
@@ -139,8 +138,13 @@ const Profile = () => {
                   <DocumentCheckIcon key={s} className="subcard-icon" />
                 ))}
               </div>
-              <p>Dates</p>
-              <text>{toCuteFormat(summaryData.start_date)} to {toCuteFormat(summaryData.end_date)}</text>
+              <p>Dates</p>{" "}
+              {summaryData.start_date && summaryData.end_date && (
+                <text>
+                  {toCuteFormat(summaryData.start_date)} to{" "}
+                  {toCuteFormat(summaryData.end_date)}
+                </text>
+              )}
             </div>
           </div>
         </div>
@@ -150,8 +154,6 @@ const Profile = () => {
           <div className="summary-subcard"></div>
         </div>
       </section>
-
-      <div className="divider-line" />
 
       <section className="delete-section">
         <div className="button-holder">

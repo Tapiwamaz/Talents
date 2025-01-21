@@ -26,7 +26,7 @@ const fetch_transactions = async (
   });
   try {
     const response = await fetch(
-      `http://localhost:5000/api/transactions/${user.sub}`,
+      `http://10.0.0.6:5000/api/transactions/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -61,7 +61,7 @@ const fetch_transactions = async (
       temp.transactions = true;
       return temp;
     });
-
+    setSummaryData({statements: []})
     // throw new Error("Error ", e);
   }
 };
@@ -74,7 +74,7 @@ const fetch_budgets = async (
 ) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/budgets/${user.sub}`,
+      `http://10.0.0.6:5000/api/budgets/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -120,7 +120,7 @@ const fetch_budgets = async (
 const fetch_expenses = async (user,  setAllExpenses, setLoadingBooleans) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/expenses/${user.sub}`,
+      `http://10.0.0.6:5000/api/expenses/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -188,7 +188,7 @@ const AppContextProvider = (props) => {
   const [fetchedTransactions, setFetchedTransactions] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [uploadedTrans, setUploadedTrans] = useState([]);
-  const [summaryData, setSummaryData] = useState({});
+  const [summaryData, setSummaryData] = useState({statements:[]});
 
   const [allBudgets, setAllBudgets] = useState([]);
   const [allExpenses, setAllExpenses] = useState({});
@@ -198,6 +198,8 @@ const AppContextProvider = (props) => {
     expenses: false,
     transactions: false,
   });
+
+  const [dark,setDark] = useState(false)
 
   useEffect(
     (e) => {
@@ -234,6 +236,8 @@ const AppContextProvider = (props) => {
     allExpenses,
     loadingBooleans,
     allBudgets,
+    dark,
+    setDark,
     setAllBudgets,
     setLoadingBooleans,
     setUser,

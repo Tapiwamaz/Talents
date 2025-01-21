@@ -3,7 +3,7 @@
   min-height: 80vh;
 }
 .summaries-top-section {
-  margin: var(--xs) 0 var(--sm) 0;
+  margin: var(--sm) 0 var(--sm) 0;
   display: flex;
 }
 
@@ -16,6 +16,8 @@
   outline: 2px solid gray;
   border: none;
   border-radius: var(--xs);
+  color: var(--main-text);
+  background-color: var(--back-page);
   display: none;
 }
 .search-input:active,.search-input:focus {
@@ -69,7 +71,7 @@
 }
 
 .search-input::placeholder {
-  font-style: italic;
+  font-style: italic;  
 }
 .summaries-upload-section {
   display: flex;
@@ -97,7 +99,7 @@
 }
 
 .pdf-input-label {
-  border: 5px dashed black;
+  border: 5px dashed gray;
   width: var(--left-margin);
   height: var(--left-margin);
   cursor: pointer;
@@ -110,7 +112,7 @@
 }
 
 .pdf-input-doc {
-  border: 2px solid black;
+  border: 2px solid gray;
   width: calc(1.5 * var(--left-margin));
   min-height: var(--lg);
   cursor: pointer;
@@ -156,7 +158,7 @@
   transition: all 100ms ease-in-out;
 }
 .summaries-upload-btn:hover {
-  border-color: black;
-  color: black;
+  border-color: var(--main-text);
+  color: var(--main-text);
   transform: scale(1.1);
 }

@@ -21,6 +21,9 @@ import {
   join_summary_data,
   reorder_merged_transactions,
 } from "../../Helpers/TransactionArrayFormatters";
+// toasts
+import toast from "react-hot-toast";
+
 
 // Functions
 const clearFiles = (
@@ -71,8 +74,10 @@ const saveTransactions = async (
       console.error(data);
       throw new Error("Something went wrong with the transaction");
     }
-    console.log(data);
+    console.log("Transactions saved",data);
     setUploadedTrans([]);
+    toast.success("Statement saved")
+
   } catch (e) {
     console.error("Error", e);
   }
@@ -177,9 +182,14 @@ const Summaries = () => {
         end_date: end_date,
         statements: [file.name],
       });
+      console.log(newSummary);
 
       let temp = add_dates(data.transactions);
-      setSummaryData(join_summary_data(summaryData, newSummary));
+      if (summaryData.statements.length > 0) {
+        setSummaryData(join_summary_data(summaryData, newSummary));
+      } else {
+        setSummaryData(newSummary);
+      }
 
       setTransactions((prev) => reorder_merged_transactions(prev, temp));
       setAllTransactions((prev) => [...prev, ...temp.reverse()]);
@@ -269,7 +279,7 @@ const Summaries = () => {
               <XMarkIcon
                 className="summaries-upload-btn"
                 onClick={() => {
-                  setLoaded(true)
+                  setLoaded(true);
                 }}
               />
             )}

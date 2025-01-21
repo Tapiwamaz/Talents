@@ -3,9 +3,10 @@
   flex-direction: column;
   padding: 0 calc(var(--left-margin));
   gap: var(--lg);
+  color: var(--main-text)
 }
 .divider-line {
-  background: rgba(30, 80, 6, 0.5);
+  background: grey;
   border-radius: var(--xs);
   height: 1px;
 }
@@ -58,12 +59,12 @@
 
 .profile-mid-section {
   display: flex;
-  background-color: rgba(128, 128, 128, 0.1);
+  background-color: var(--background-second);
+  color: var(--main-text);
   padding: var(--sm) var(--sm);
   border-radius: var(--xs);
-  box-shadow: -4px 1px 50px -4px rgba(128, 128, 128, 0.71);
-  -webkit-box-shadow: -4px 1px 50px -4px rgba(128, 128, 128, 0.71);
-  -moz-box-shadow: -4px 1px 50px -4px rgba(128, 128, 128, 0.71);
+  box-shadow: var(--box-shadow);
+  margin: var(--xs) 0 var(--lg) 0;
 }
 
 .upload-summary-card {
@@ -81,7 +82,7 @@
   flex: 1;
 }
 .summary-subcard p {
-  color:gray
+  /* color: gray; */
 }
 .subcard-icon {
   width: 25px;
@@ -97,18 +98,19 @@
 .delete-section {
   display: flex;
   flex-direction: column;
-  background-color: rgba(50, 50, 50,1);
-  color: white;
+  background-color: rgba(50, 50, 50, 1);
+
   outline: 2px solid red;
   border-radius: var(--xs);
-  box-shadow: -4px 1px 38px -13px rgba(250,0,0,0.71);
-  -webkit-box-shadow: -4px 1px 38px -13px rgba(250,0,0,0.71);
-  -moz-box-shadow: -4px 1px 38px -13px rgba(250,0,0,0.71);
+  box-shadow: -4px 1px 38px -13px rgba(250, 0, 0, 0.71);
+  -webkit-box-shadow: -4px 1px 38px -13px rgba(250, 0, 0, 0.71);
+  -moz-box-shadow: -4px 1px 38px -13px rgba(250, 0, 0, 0.71);
 }
 
 .button-holder {
   display: flex;
   flex: 1;
+  color: white;
   border: 1px solid gray;
   border-top: none;
   border-right: none;
@@ -128,7 +130,7 @@
 }
 
 .btn-delete {
-  background-color: rgba(60, 60, 60,1);
+  background-color: rgba(60, 60, 60, 1);
   color: red;
   border: none;
   display: flex;

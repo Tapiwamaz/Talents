@@ -134,39 +134,39 @@ def save_transactions():
         if 'transactions' not in req or 'name' not in req or 'sub' not in req:
             return jsonify({"Error": "Insufficient information"}), 400
             
-            transactions = req["transactions"]
-            statement_name = req["name"] 
-            sub = req["sub"] 
-            
-            try: 
-                connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                            user=DB.DB_CONFIG["user"],
-                                            host=DB.DB_CONFIG["host"],
-                                            password=DB.DB_CONFIG["password"])
-                cursor = connection.cursor()
-                
-                for transaction in transactions:
-                    temp_date = transaction["full_date"]
-                    cursor.execute(""" 
-                                    insert into transactions (user_id,statement_name,details,balance,
-                                    date,change,credit,service_charge) 
-                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                                """,
-                                    (sub,statement_name, transaction["details"], transaction["balance"],
-                                    transaction["full_date"],transaction["change"],transaction["credit"],
-                                    transaction["service_charge"],)
-                                )
-                    
-                connection.commit()
-                return jsonify({"Success": "Transactions saved"}), 200
+        transactions = req["transactions"]
+        statement_name = req["name"] 
+        sub = req["sub"] 
         
-            except Exception as e:
-                return jsonify({"Error": str(e)}), 401
-            finally:
-                if cursor:
-                    cursor.close()
-                if connection:
-                    connection.close()
+        try: 
+            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
+                                        user=DB.DB_CONFIG["user"],
+                                        host=DB.DB_CONFIG["host"],
+                                        password=DB.DB_CONFIG["password"])
+            cursor = connection.cursor()
+            
+            for transaction in transactions:
+                temp_date = transaction["full_date"]
+                cursor.execute(""" 
+                                insert into transactions (user_id,statement_name,details,balance,
+                                date,change,credit,service_charge) 
+                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                            """,
+                                (sub,statement_name, transaction["details"], transaction["balance"],
+                                transaction["full_date"],transaction["change"],transaction["credit"],
+                                transaction["service_charge"],)
+                            )
+                
+            connection.commit()
+            return jsonify({"Success": "Transactions saved"}), 200
+    
+        except Exception as e:
+            return jsonify({"Error": str(e)}), 401
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
 
 
 @app.route('/api/upload', methods=['POST'])
@@ -422,6 +422,58 @@ def get_expenses(id):
                 cursor.close()
             if connection:
                 connection.close()
+
+@app.route('/api/summaries/<id>',methods=['GET'])
+def get_summaries(id):
+    try: 
+        connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
+                                    user=DB.DB_CONFIG["user"],
+                                    host=DB.DB_CONFIG["host"],
+                                    password=DB.DB_CONFIG["password"])
+        cursor = connection.cursor()
+        
+        cursor.execute(""" 
+                            select DATE_TRUNC('week',date) as week_start,
+                            sum(case when credit and not service_charge then change end) as income, 
+                            sum(case when not credit and not service_charge then change end) as expenditure,
+                            sum(case when not credit and service_charge then change end) as charges,
+                            sum(case when credit then change else -change end) as balance
+                            from transactions where user_id=%s group by week_start order by week_start;
+                        """,
+                            (str(id),)
+                        )
+        results = cursor.fetchall()
+        connection.commit()
+        
+        column_names = ["Start of Week","Income","Expenses","Charges","Balance"]
+        if results:
+            Response = []
+            for row in results:
+                # print(row)
+                
+                line = {}
+                for i in range(0,len(column_names)):
+                    if i!=0:
+                        if row[i] == None:
+                            line[column_names[i]] = float(0)
+                        else:    
+                            line[column_names[i]] = float(row[i])
+                    else:    
+                        line[column_names[i]] = row[i]        
+                Response.append(line)
+                    
+            return jsonify({"WeeksArray": Response}), 200
+        else:
+            return jsonify({"WeeksArray": []}), 200
+
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 401
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
     
 if __name__ == '__main__':
-    app.run(debug=True)    
+    # app.run(debug=True)    
+    app.run(host='10.0.0.6',debug=True,threaded=False)    

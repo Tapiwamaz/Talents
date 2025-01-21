@@ -16,6 +16,7 @@ const Budgets = () => {
   const {
     user,
     allBudgets,
+    dark,
     loadingBooleans,
     budgetDict,
     allExpenses,
@@ -36,6 +37,7 @@ const Budgets = () => {
           setCreatedB={setCreated}
           setAllBudgets={setAllBudgets}
           setBudgetDict={setBudgetDict}
+          dark={dark}
         />
       </section>
 

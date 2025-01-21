@@ -8,9 +8,7 @@
   flex-direction: column;
   border-radius: var(--sm);
   background-color: var(--background);
-  box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
-  -webkit-box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
-  -moz-box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
+  box-shadow: var(--box-shadow);
 }
 .subtitle {
   font-weight: normal;
@@ -36,7 +34,7 @@
 }
 
 .budget-create-section .budget-create-label {
-  color: rgb(85, 85, 85);
+  color: gray;
   font-size: 0.9rem;
 }
 
@@ -49,6 +47,7 @@
   outline: 1px gray solid;
   border-radius: var(--xs);
   padding: var(--xs);
+  background-color: inherit;
 }
 
 .budget-create-input:active,
@@ -80,15 +79,18 @@
   background-color: inherit;
   border-radius: var(--xs);
   padding: var(--xs) var(--md);
-  outline: black solid 2px;
+  outline: var(--main-text) solid 2px;
+  color: var(--main-text);
   cursor: pointer;
   transition: all ease-in-out 150ms;
 }
 
 .budget-create-btn-holder .budget-create-btn:nth-of-type(2) {
-  background-color: var(--primary);
-  color: white;
+  background-color: var(--primary-greyed);
   outline: none;
+}
+.budget-create-btn-holder .budget-create-btn:nth-of-type(2):hover {
+  background-color: var(--primary);
 }
 
 .budget-create-btn:hover {
@@ -96,11 +98,10 @@
 }
 .budget-create-btn-holder .budget-create-btn:nth-of-type(1):hover {
   background-color: var(--main-text);
-  color: white;
+  color: var(--background);
   scale: 1.1;
   outline: none;
 }
-
 
 .budget-create-categories {
   display: flex;
@@ -110,21 +111,23 @@
 .budget-create-category-btn {
   font-family: inherit;
   border: none;
-  background-color: gainsboro;
+  color: inherit;
+  background-color: var(--background-second);
   border-radius: var(--xs);
   padding: var(--xs) var(--md);
   cursor: pointer;
   transition: all ease-in 50ms;
 }
 .budget-create-category-btn:hover {
-  background-color: rgb(200, 200, 200);
+  background-color: rgb(220, 220, 220);
+  color: var(--main-text);
 }
 
 .active-btn {
-  background-color: rgb(200, 200, 200);
+  background-color: rgb(220, 220, 220);
   outline: 2px var(--primary) solid;
+  color: var(--main-text);
 }
-
 
 /* Create Component end */
 
@@ -137,7 +140,8 @@
   flex-direction: column;
   border-radius: var(--sm);
   background-color: var(--background);
-  outline: 3px solid black;
+  /* outline: 3px solid var(--main-text); */
+  box-shadow: var(--box-shadow);
   max-width: calc(3 * var(--left-margin));
 }
 
@@ -152,7 +156,7 @@
 }
 
 .expense-create-label {
-  color: rgb(85, 85, 85);
+  color: gray;
   font-size: 0.9rem;
 }
 
@@ -171,9 +175,8 @@
   padding: var(--sm) var(--md);
   justify-content: center;
   align-items: center;
-  box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
-  -webkit-box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
-  -moz-box-shadow: -1px 1px 20px -4px rgba(128, 128, 128, 0.71);
+  box-shadow: var(--box-shadow);
+  --specific-color: var(--progress-colour);
 }
 
 .description-line {

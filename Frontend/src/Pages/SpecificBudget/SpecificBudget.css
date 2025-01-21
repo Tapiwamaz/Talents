@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--sm);
+  color: var(--main-text);
 }
 .specific-budget-main > h1 {
   margin: 0 var(--lg);
@@ -10,7 +11,6 @@
 .specific-budget-details {
   display: flex;
   justify-content: space-evenly;
-  /* border: 1px solid rgba(25, 25, 25, 0.9); */
   align-items: center;
 }
 

@@ -67,6 +67,7 @@
   width: 100%;
   justify-content: center;
   background-color: inherit;
+  color: var(--main-text) ;
   border: none;
   display: flex;
   transition: all 150ms ease-in-out; ;

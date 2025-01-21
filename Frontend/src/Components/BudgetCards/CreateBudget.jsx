@@ -123,11 +123,13 @@ const CreateBudget = ({
   newBudget,
   setNewBudget,
   setCreatedB,
+  dark,
   createdB,
   setAllBudgets,
   setBudgetDict
 }) => {
   const [activeCategory, setActiveCategory] = useState(-1);
+
   return (
     <main className="budget-create-main">
       <h2 className="title">Create Budget</h2>
@@ -210,6 +212,7 @@ const CreateBudget = ({
             {categories.map((category, index) => (
               <button
                 key={index}
+                style={dark ? {"--main-text": "var(--background)"} : {}}
                 disabled={createdB}
                 className={
                   activeCategory === index
