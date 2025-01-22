@@ -26,7 +26,7 @@ const fetch_transactions = async (
   });
   try {
     const response = await fetch(
-      `http://10.0.0.6:5000/api/transactions/${user.sub}`,
+      `http://10.0.0.11:5000/api/transactions/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -74,7 +74,7 @@ const fetch_budgets = async (
 ) => {
   try {
     const response = await fetch(
-      `http://10.0.0.6:5000/api/budgets/${user.sub}`,
+      `http://10.0.0.11:5000/api/budgets/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -120,7 +120,7 @@ const fetch_budgets = async (
 const fetch_expenses = async (user,  setAllExpenses, setLoadingBooleans) => {
   try {
     const response = await fetch(
-      `http://10.0.0.6:5000/api/expenses/${user.sub}`,
+      `http://10.0.0.11:5000/api/expenses/${user.sub}`,
       {
         method: "GET",
         headers: {

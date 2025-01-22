@@ -23,7 +23,7 @@
 }
 .profile-email {
   font-weight: normal;
-  font-size: 0.8rem;
+  font-size: 0.95vw;
   font-style: italic;
 }
 
@@ -42,8 +42,8 @@
 
 .profile-logout-button {
   font: inherit;
-  width: 40px;
-  height: 40px;
+  width: 3vw;
+  height: 3vw;
   padding: var(--xs);
   border: 2px solid gray;
   color: gray;
@@ -82,16 +82,17 @@
   flex: 1;
 }
 .summary-subcard p {
-  /* color: gray; */
+  color: rgb(150,150,150);
 }
+
 .subcard-icon {
-  width: 25px;
-  height: 25px;
+  width: 1.5vw;
+  height: 1.5vw;
 }
 
 .icon-holder {
   display: flex;
-  gap: 0.3rem;
+  gap:var(--xs);
   margin-bottom: var(--sm);
 }
 
@@ -125,7 +126,8 @@
 }
 
 .profile-text-section text {
-  font-size: 0.7rem;
+  font-size: 0.94vw;
+  color: rgb(140,140,140);
   font-style: italic;
 }
 
@@ -136,7 +138,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.2rem;
+  gap: var(--xs);
   border: gray solid 2px;
   border-radius: var(--xs);
   padding: var(--xs);

@@ -41,7 +41,7 @@ const Budgets = () => {
         />
       </section>
 
-      <h1 className="budgets-main-h3">Your budgets</h1>
+      <h1 className="budgets-main-h1 left-margin">Your budgets</h1>
       {loadingBooleans.budgets && keys.length === 0 && <h2 className="budgets-main-h3">No budgets</h2>}
 
       <section className="budgets-show-budgets">

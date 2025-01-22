@@ -12,13 +12,23 @@
 .root-navlink {
   text-decoration: none;
   color: var(--main-text);
-  font-size: 1.1rem;
+  font-size: 1.2vw;
+  transition: all ease-in-out 150ms;
 }
+
+.root-nav .root-navlink:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--main-text);
+  transform: scale(1.1);
+}
+
+
 .root-nav {
   margin-left: var(--left-margin);
 }
 .root-logo {
-  font-size: 2.8rem;
+  font-size: 2.8vw;
   margin-left: var(--left-margin);
 }
 .root-nav-list {
@@ -66,7 +76,7 @@
   gap: var(--sm);
   align-items: center;
   margin-left: calc(0.5 * var(--left-margin));
-  font-size: 1.2rem;
+  font-size: var(--sm);
 }
 
 

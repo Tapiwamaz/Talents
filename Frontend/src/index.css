@@ -6,10 +6,11 @@
 
 :root {
   /* Sizes */
-  --xs: 8px;
-  --sm: 16px;
-  --md: 32px;
-  --lg: 48px;
+  --xs: 0.55vw;
+  --sm: 1.1vw;
+  --md: 2.2vw;
+  --lg: 4vw;
+  --h1-size: 2.2vw;
 
   /* colors */
   --main-text: rgb(30, 30, 30);
@@ -37,6 +38,9 @@ h5,
 h6,
 p {
   color: var(--main-text);
+}
+h1 {
+  font-size: 1.5vw;
 }
 
 ::-webkit-scrollbar {

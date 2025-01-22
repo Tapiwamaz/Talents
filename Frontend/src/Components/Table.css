@@ -30,7 +30,7 @@
   margin-top: var(--md);
 }
 .table-transactions {
-  font-size: 0.85rem;
+  font-size: 0.9vw;
   border-spacing: 0;
   border: none;
   border-radius: var(--xs);
@@ -45,7 +45,7 @@
 .table-main th {
   padding: var(--xs);
   background-color: var(--background-second);
-  font-size: 0.95rem;
+  font-size: 0.95vw;
   height: var(--lg);
 }
 
@@ -71,7 +71,7 @@
   height: fit-content;
 }
 .key-hint {
-  font-size: 0.6rem;
+  font-size: 0.6vw;
   font-weight: normal;
   font-style: italic;
 }
@@ -115,7 +115,7 @@
 }
 .pagination p {
   align-self: center;
-  font-size: 0.85rem;
+  font-size: 1vw;
   margin: auto;
 }
 

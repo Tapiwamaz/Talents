@@ -476,4 +476,4 @@ def get_summaries(id):
     
 if __name__ == '__main__':
     # app.run(debug=True)    
-    app.run(host='10.0.0.6',debug=True,threaded=False)    
+    app.run(host='10.0.0.11',debug=True,threaded=False)    

@@ -122,7 +122,7 @@
   justify-content: center;
   align-items: center;
   padding-left: var(--xs);
-  font-size: 0.8rem;
+  font-size: 1vw;
   font-style: italic;
 }
 .pdf-input-doc p {
@@ -132,7 +132,7 @@
 }
 .pdf-input-label p,
 .files-display p {
-  font-size: 0.7rem;
+  font-size: 0.9vw;
   font-style: italic;
   text-align: center;
 }

@@ -2,8 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--sm);
-  color : var(--main-text);
-
+  color: var(--main-text);
 }
 .budgets-create-section {
   display: flex;
@@ -35,13 +34,14 @@
 
 .loader-container {
   min-width: calc(2 * var(--left-margin));
-  min-height: calc(1* var(--left-margin));
+  min-height: calc(1 * var(--left-margin));
 }
 .loader-table-container {
   min-height: 55vh;
 }
 
-.loader-container, .loader-table-container {
+.loader-container,
+.loader-table-container {
   justify-content: center;
   display: flex;
   align-items: center;
@@ -49,11 +49,10 @@
   background-color: var(--background);
 }
 
-
-
-.budgets-main-h3 {
+.left-margin {
   padding: 0 calc(0.75 * var(--left-margin));
 }
+
 .budgets-main-h1 {
-  font-size: 2rem;
+  font-size: var(--h1-size);
 }
