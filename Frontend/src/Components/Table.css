@@ -127,7 +127,8 @@
   width: var(--md);
   height: var(--md);
   border: 3px solid gray;
-  background: var(--background-second);
+  background: var(--background);
+  color: var(--main-text);
   cursor: pointer;
   outline: none;
 }
@@ -140,9 +141,9 @@
 }
 
 .table-button:hover {
-  background: var(--background);
+  background: var(--main-text);
   border: var(--main-text) solid 3px;
-  color: var(--main-text);
+  color: var(--background);
   scale: 1.1;
 }
 

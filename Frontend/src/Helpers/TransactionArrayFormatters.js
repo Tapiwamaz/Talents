@@ -9,26 +9,36 @@ const add_dates = (allTransactions) => {
 };
 
 const create_summary_data = (transactions) => {
+  console.log(transactions);
+  if (transactions.length === 0) return { statements: [], banks: [] };
   const summaryData = {
     statements: [],
     running_credits: 0.0,
     running_debits: 0.0,
-    initial_balance: transactions[transactions.length - 1].credit
-      ? transactions[transactions.length - 1].balance -
-        transactions[transactions.length - 1].change
-      : transactions[transactions.length - 1].balance +
-        transactions[transactions.length - 1].change,
+    initial_balance: 0.0,
     running_charges: 0.0,
     running_balance: 0.0,
     number_of_transactions: transactions.length,
     start_date: transactions[transactions.length - 1].full_date,
     end_date: transactions[0].full_date,
+    banks: [],
   };
 
-  for (let i = 0; i < transactions.length; i++) {
+  for (let i = transactions.length - 1; i >= 0; i--) {
     // statements
     if (!summaryData.statements.includes(transactions[i].statement_name)) {
       summaryData.statements.push(transactions[i].statement_name);
+      if (transactions[i].credit) {
+        summaryData.initial_balance =
+          summaryData.initial_balance +
+          transactions[i].balance -
+          transactions[i].change;
+      } else {
+        summaryData.initial_balance =
+          summaryData.initial_balance +
+          transactions[i].balance +
+          transactions[i].change;
+      }
     }
     // credit
     if (transactions[i].credit) {
@@ -47,6 +57,15 @@ const create_summary_data = (transactions) => {
     summaryData.running_credits -
     summaryData.running_debits;
 
+  return summaryData;
+};
+
+const add_banks = (statements, summaryData) => {
+  for (let i = 0; i < statements.length; i++) {
+    if (!summaryData.banks.includes(statements[i].bank)) {
+      summaryData.banks.push(statements[i].bank);
+    }
+  }
   return summaryData;
 };
 
@@ -76,8 +95,10 @@ const ammend_summary_data = (summaryData) => {
 };
 const join_summary_data = (arr1, arr2) => {
   // assuming arrays are two correct summaries of statements
+  console.log(arr1, arr2);
   const summaryData = {
     statements: [...arr1.statements, ...arr2.statements],
+    banks: [...arr1.banks, ...arr2.banks],
     running_credits: arr1.running_credits + arr2.running_credits,
     running_debits: arr1.running_debits + arr2.running_debits,
     initial_balance:
@@ -86,7 +107,8 @@ const join_summary_data = (arr1, arr2) => {
         : arr2.initial_balance,
     running_charges: arr1.running_charges + arr2.running_charges,
     running_balance: 0.0,
-    number_of_transactions: arr1.length + arr2.length,
+    number_of_transactions:
+      arr1.number_of_transactions + arr2.number_of_transactions,
     start_date:
       arr1.start_date < arr2.start_date ? arr1.start_date : arr2.start_date,
     end_date: arr1.end_date > arr2.end_date ? arr1.end_date : arr2.end_date,
@@ -97,13 +119,15 @@ const join_summary_data = (arr1, arr2) => {
     summaryData.running_credits -
     summaryData.running_debits;
 
+  console.log(summaryData);
+
   return summaryData;
 };
 
 const reorder_merged_transactions = (arr1, arr2) => {
   // arr1 and 2 are arrays of tranaction objects each with a date to be sorted by ascending order
   const result = [...arr1, ...arr2].sort((a, b) => b.full_date - a.full_date);
-  return result
+  return result;
 };
 
 export {
@@ -111,5 +135,6 @@ export {
   add_dates,
   join_summary_data,
   ammend_summary_data,
-  reorder_merged_transactions
+  reorder_merged_transactions,
+  add_banks,
 };

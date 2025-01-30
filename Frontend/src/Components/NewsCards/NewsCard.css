@@ -43,19 +43,29 @@
   text-decoration-color: var(--main-text);
 }
 
+.large-card:hover img,
+.mid-card:hover img,
+.small-card:hover img{
+ transform: scale(1.05);
+}
+
 .large-img,
 .mid-img {
   width: 100%;
   border-radius: var(--xs);
+  transition: all ease-in-out 150ms;
 }
 .small-img {
   height: 12vw;
   width: 12vw;
   border-radius: var(--xs);
+  transition: all ease-in-out 150ms;
+
 }
 
 .img-caption {
   align-self: flex-end;
   font-size: 0.8rem;
   color: rgb(170, 170, 170);
+  margin-top: var(--xs);
 }

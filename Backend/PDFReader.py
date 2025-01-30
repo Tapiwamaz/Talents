@@ -56,6 +56,7 @@ class Transactions:
         self.years = []
         self.year_index = 0
         self.initial_balance = 0.0
+        self.banks = ""
 
     def fetch_transaction(self,id):
         return self.transactions[str(id)]
@@ -104,6 +105,10 @@ def read_transactions(file):
             end_transactions = len(page_lines)
 
         if pagenum ==0:
+            if "FNB" in page_text:
+                all_transactions.bank = "FNB"
+            elif "Standard" in page_text:
+                all_transactions.bank = "Standard"    
             
             index_of_years = get_index_of_subtring("Statement from",page_lines)
             dates_line = page_lines[index_of_years].split(" ")

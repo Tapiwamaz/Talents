@@ -86,11 +86,13 @@ const saveTransactions = async (
 const saveStatement = async (
   file,
   summaryData,
+  bank,
   subToken,
   transactions,
   setUploadedTrans
 ) => {
-  const formData = { summary: summaryData, name: file.name, sub: subToken };
+  const formData = { summary: summaryData, name: file.name, bank:bank , sub: subToken };
+  // console.log(summaryData)
   try {
     const response = await fetch("http://localhost:5000/api/statement", {
       method: "POST",
@@ -104,7 +106,7 @@ const saveStatement = async (
       throw new Error("Something went wrong with the statement");
     }
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
 
     saveTransactions(file.name, subToken, transactions, setUploadedTrans);
   } catch (e) {
@@ -116,6 +118,7 @@ const Summaries = () => {
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [searchBool, setSearchBoolean] = useState(false);
+  const [bank, setBank] = useState("");
 
   const {
     user,
@@ -169,6 +172,7 @@ const Summaries = () => {
         initial_balance,
         start_date,
         end_date,
+        bank,
       } = data;
 
       const newSummary = ammend_summary_data({
@@ -181,8 +185,9 @@ const Summaries = () => {
         start_date: start_date,
         end_date: end_date,
         statements: [file.name],
+        banks: [bank]
       });
-      console.log(newSummary);
+      setBank(bank)
 
       let temp = add_dates(data.transactions);
       if (summaryData.statements.length > 0) {
@@ -298,6 +303,7 @@ const Summaries = () => {
                   saveStatement(
                     file,
                     summaryData,
+                    bank,
                     user.sub,
                     uploadedTrans,
                     setUploadedTrans

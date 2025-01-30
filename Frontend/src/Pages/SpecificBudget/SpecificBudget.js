@@ -30,7 +30,7 @@ const SpecificBudget = () => {
           <strong className="budget-name">{budgetDict[budget_id].name}</strong> overview
         </h1>
         <section className="specific-budget-details">
-          <BudgetCard budget={allBudgets[budget_id]} />
+          <BudgetCard budget={allBudgets[budget_id]} specificBudget={true}/>
           <AddExpense budget={allBudgets[budget_id]} />
         </section>
         <h1>Expenses</h1>

@@ -2,6 +2,7 @@
 import React, { createContext, useEffect, useState } from "react";
 // helpers
 import {
+  add_banks,
   add_dates,
   create_summary_data,
 } from "../Helpers/TransactionArrayFormatters";
@@ -9,8 +10,24 @@ import { chooseColour } from "../Helpers/Colours";
 // toasts
 import toast from "react-hot-toast";
 import { toInputFormat } from "../Helpers/DateTimeFormatters";
+// OPENAI
+import OpenAI from 'openai';
+
 
 export const AppContext = createContext();
+
+// console.log(process.env)
+
+const baseURL = "https://api.aimlapi.com/v1";
+const apiKey = process.env.REACT_APP_OPENAI_KEY;
+
+const api = new OpenAI({
+  apiKey,
+  baseURL,
+  dangerouslyAllowBrowser: true,
+});
+
+
 
 const fetch_transactions = async (
   user,
@@ -18,6 +35,7 @@ const fetch_transactions = async (
   setFetchedTransactions,
   setLoaded,
   setTransactions,
+  setStatements,
   setSummaryData,
   setLoadingBooleans
 ) => {
@@ -26,7 +44,16 @@ const fetch_transactions = async (
   });
   try {
     const response = await fetch(
-      `http://10.0.0.11:5000/api/transactions/${user.sub}`,
+      `http://localhost:5000/api/transactions/${user.sub}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const response2 = await fetch(
+      `http://localhost:5000/api/statements/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -35,18 +62,22 @@ const fetch_transactions = async (
       }
     );
     const data = await response.json();
-    if (!response.ok) {
+    const data2 = await response2.json();
+    if (!response.ok || !response2.ok) {
       console.error(data);
-      throw new Error("Something went wrong fetching transactions");
+      throw new Error("Something went wrong fetching transactions or statements");
     }
 
-    if (data.transactions.length > 0) {
+    if (data.transactions.length > 0 && data2.statements) {
       let temp = add_dates(data.transactions);
       setFetchedTransactions(temp);
+      console.log(temp)
       setAllTransactions(temp);
       setTransactions(temp);
       // there will be a need for a more complex calc here
-      setSummaryData(create_summary_data(temp));
+      setStatements(data2.statements);
+      console.log(data2.statements)
+      setSummaryData(add_banks( data2.statements,create_summary_data(temp)));
       setLoaded(true);
       setLoadingBooleans((prev) => {
         let temp = prev;
@@ -74,7 +105,7 @@ const fetch_budgets = async (
 ) => {
   try {
     const response = await fetch(
-      `http://10.0.0.11:5000/api/budgets/${user.sub}`,
+      `http://localhost:5000/api/budgets/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -120,7 +151,7 @@ const fetch_budgets = async (
 const fetch_expenses = async (user,  setAllExpenses, setLoadingBooleans) => {
   try {
     const response = await fetch(
-      `http://10.0.0.11:5000/api/expenses/${user.sub}`,
+      `http://localhost:5000/api/expenses/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -188,9 +219,10 @@ const AppContextProvider = (props) => {
   const [fetchedTransactions, setFetchedTransactions] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [uploadedTrans, setUploadedTrans] = useState([]);
-  const [summaryData, setSummaryData] = useState({statements:[]});
+  const [summaryData, setSummaryData] = useState({statements:[], banks:[]});
+  const [statements,setStatements] = useState([])
 
-  const [allBudgets, setAllBudgets] = useState([]);
+  const [allBudgets, setAllBudgets] = useState({});
   const [allExpenses, setAllExpenses] = useState({});
   const [budgetDict, setBudgetDict] = useState({});
   const [loadingBooleans, setLoadingBooleans] = useState({
@@ -200,6 +232,7 @@ const AppContextProvider = (props) => {
   });
 
   const [dark,setDark] = useState(false)
+
 
   useEffect(
     (e) => {
@@ -213,15 +246,44 @@ const AppContextProvider = (props) => {
           setFetchedTransactions,
           setLoaded,
           setTransactions,
+          setStatements,
           setSummaryData,
           setLoadingBooleans
         );
         fetch_budgets(user, setBudgetDict, setLoadingBooleans, setAllBudgets);
         fetch_expenses(user, setAllExpenses , setLoadingBooleans);
       }
+
     },
     [loggedIn, user]
   );
+
+ 
+  
+  const AIRequest = async ({systemPrompt,userPrompt}) => {
+    const completion = await api.chat.completions.create({
+      model: 'deepseek/deepseek-r1',
+      messages: [
+        {
+          role: "system",
+          content: systemPrompt,
+        },
+        {
+          role: "user",
+          content: userPrompt,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 256,
+    });
+  
+    const response = completion.choices[0].message.content;
+    
+    console.log("Deepseak response",response)
+    return response
+  };
+  
+
 
   const contextValue = {
     user,
@@ -237,6 +299,8 @@ const AppContextProvider = (props) => {
     loadingBooleans,
     allBudgets,
     dark,
+    statements,
+    setStatements,
     setDark,
     setAllBudgets,
     setLoadingBooleans,
@@ -250,6 +314,7 @@ const AppContextProvider = (props) => {
     setFetchedTransactions,
     setAllExpenses,
     setBudgetDict,
+    AIRequest
   };
 
   return (

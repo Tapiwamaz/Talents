@@ -50,18 +50,23 @@ const sendBudget = async ({
     formData.total_expenses = 0.0;
 
     setAllBudgets((prev) => {
-      formData.colour = chooseColour(prev.length);
+      let temp = prev;
+      let index = Object.keys(temp).length;
+      formData.colour = chooseColour(index);
+      temp[data.budget_id] = formData;
+
       setBudgetDict((t) => {
         let temp = t;
         temp[formData.budget_id] = {
           name: formData.name,
-          colour: chooseColour(prev.length),
+          colour: chooseColour(index),
         };
         return temp;
       });
       setNewBudget(formData);
-      return [formData, ...prev];
+      return temp;
     });
+
     setCreatedB(true);
 
     return response;
@@ -76,7 +81,7 @@ const handleSubmit = async ({
   setNewBudget,
   setCreatedB,
   setAllBudgets,
-  setBudgetDict
+  setBudgetDict,
 }) => {
   console.log(newBudget);
   if (
@@ -98,7 +103,7 @@ const handleSubmit = async ({
     setNewBudget: setNewBudget,
     setCreatedB: setCreatedB,
     setAllBudgets: setAllBudgets,
-    setBudgetDict: setBudgetDict
+    setBudgetDict: setBudgetDict,
   });
 
   toast.promise(myPromise, {
@@ -126,7 +131,7 @@ const CreateBudget = ({
   dark,
   createdB,
   setAllBudgets,
-  setBudgetDict
+  setBudgetDict,
 }) => {
   const [activeCategory, setActiveCategory] = useState(-1);
 
@@ -212,7 +217,7 @@ const CreateBudget = ({
             {categories.map((category, index) => (
               <button
                 key={index}
-                style={dark ? {"--main-text": "var(--background)"} : {}}
+                style={dark ? { "--main-text": "var(--background)" } : {}}
                 disabled={createdB}
                 className={
                   activeCategory === index
@@ -252,7 +257,7 @@ const CreateBudget = ({
               setNewBudget: setNewBudget,
               setCreatedB: setCreatedB,
               setAllBudgets: setAllBudgets,
-              setBudgetDict: setBudgetDict
+              setBudgetDict: setBudgetDict,
             });
           }}
         >

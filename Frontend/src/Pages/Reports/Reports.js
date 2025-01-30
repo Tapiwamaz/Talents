@@ -6,7 +6,6 @@ import BarGraph from "../../Components/ReportsComponents/BarGraph";
 import PieGraph from "../../Components/ReportsComponents/PieGraph";
 import toast from "react-hot-toast";
 
-
 const getBarGraphData = async (sub, setArr) => {
   if (!sub) {
     toast.error("Couldnt load bar graph");
@@ -14,7 +13,7 @@ const getBarGraphData = async (sub, setArr) => {
   }
 
   try {
-    const response = await fetch(`http://10.0.0.6:5000/api/summaries/${sub}`, {
+    const response = await fetch(`http://localhost:5000/api/summaries/${sub}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -47,17 +46,31 @@ const getBarGraphData = async (sub, setArr) => {
 };
 
 const Reports = () => {
-  const { user, summaryData,dark } = useContext(AppContext);
+  const { user, summaryData, dark, AIRequest, allTransactions } = useContext(AppContext);
   const [weekArray, setWeekArray] = useState([]);
+  const [categoryArray, setCategoryArray] = useState([
+    { name: "Income", value: summaryData.running_credits },
+    {
+      name: "Expenses",
+      value: summaryData.running_debits - summaryData.running_charges,
+    },
+    { name: "Charges", value: summaryData.running_charges },
+  ]);
 
   useEffect(() => {
     getBarGraphData(user.sub, setWeekArray);
-  }, );
-  let categoryArray = [
-    { name: "Income", value: summaryData.running_credits },
-    { name: "Expenses", value: summaryData.running_debits - summaryData.running_charges },
-    { name: "Charges", value: summaryData.running_charges },
-  ];
+    // AIRequest({
+    //   systemPrompt:
+    //     "You are a data analyst specializing in categorizing bank transactions into categories",
+    //   userPrompt: `Categorize the following transctions and return only an array on the form 
+    //   [
+    //     { name: "Name_of_category", value: total_change },
+    //   ];
+      
+    //   ${allTransactions}
+    //   `,
+    // });
+  });
 
   return (
     <main className="reports-main">
@@ -85,7 +98,7 @@ const Reports = () => {
       </section>
 
       <section className="reports-section mid-section">
-      <BarGraph weekArray={weekArray} dark={dark} />
+        <BarGraph weekArray={weekArray} dark={dark} />
         <PieGraph categoryArray={categoryArray} />
       </section>
       <section className="reports-section low-section"></section>
