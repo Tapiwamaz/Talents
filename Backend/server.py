@@ -1,6 +1,7 @@
 from  flask import Flask, request, jsonify
 from flask_cors import CORS
 from psycopg2 import errors
+import psycopg2
 import PDFReader as reader
 from DB import connect_to_db
 from CategorizeData import categorize_main
@@ -9,6 +10,11 @@ app = Flask(__name__)
 CORS(app)
 
 # API routes
+# dummy
+@app.route('/api/x',methods=['GET'])
+def x():
+    return 'x',200
+
 # users --------------------------------------------------------------------------------------------------------------------------------
 @app.route('/api/users/<user_id>',methods=['POST'])
 def create_user(user_id):
@@ -554,7 +560,7 @@ def clearall(id):
         if connection:
             connection.close()
         
-    
+
 if __name__ == '__main__':
     app.run(debug=True)    
     # app.run(host='10.0.0.11',debug=True)    
