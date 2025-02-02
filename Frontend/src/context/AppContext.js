@@ -30,7 +30,7 @@ const fetch_transactions = async (
   });
   try {
     const response = await fetch(
-      `http://localhost:5000/api/transactions/${user.sub}`,
+      `https://talents-backend.onrender.com/api/transactions/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -39,7 +39,7 @@ const fetch_transactions = async (
       }
     );
     const response2 = await fetch(
-      `http://localhost:5000/api/statements/${user.sub}`,
+      `https://talents-backend.onrender.com/api/statements/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -92,7 +92,7 @@ const fetch_budgets = async (
 ) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/budgets/${user.sub}`,
+      `https://talents-backend.onrender.com/api/budgets/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -138,7 +138,7 @@ const fetch_budgets = async (
 const fetch_expenses = async (user, setAllExpenses, setLoadingBooleans) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/expenses/${user.sub}`,
+      `https://talents-backend.onrender.com/api/expenses/${user.sub}`,
       {
         method: "GET",
         headers: {

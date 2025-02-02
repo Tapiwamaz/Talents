@@ -13,7 +13,7 @@ CORS(app)
 # dummy
 @app.route('/api/x',methods=['GET'])
 def x():
-    return 'x',200
+    return 'Fancy meeting you here!',200
 
 # users --------------------------------------------------------------------------------------------------------------------------------
 @app.route('/api/users/<user_id>',methods=['POST'])
