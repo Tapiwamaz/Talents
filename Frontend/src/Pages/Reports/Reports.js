@@ -5,8 +5,21 @@ import SummaryCard from "../../Components/ReportsComponents/SummaryCard";
 import BarGraph from "../../Components/ReportsComponents/BarGraph";
 import PieGraph from "../../Components/ReportsComponents/PieGraph";
 import toast from "react-hot-toast";
+// OPENAI
+import OpenAI from "openai";
 
-const getBarGraphData = async (sub, setArr) => {
+// console.log(process.env)
+
+const baseURL = "https://api.aimlapi.com/v1";
+const apiKey = process.env.REACT_APP_OPENAI_KEY;
+
+const api = new OpenAI({
+  apiKey,
+  baseURL,
+  dangerouslyAllowBrowser: true,
+});
+
+const getBarGraphData = async (sub, setArr, setLoader) => {
   if (!sub) {
     toast.error("Couldnt load bar graph");
     return;
@@ -25,6 +38,10 @@ const getBarGraphData = async (sub, setArr) => {
     if (!response.ok) {
       console.error("Couldnt fetch graph data");
       setArr([]);
+      setLoader((prev) => {
+        let temp = prev;
+        temp.graph = true;
+      });
       return;
     }
     let arr = data.WeeksArray;
@@ -40,37 +57,120 @@ const getBarGraphData = async (sub, setArr) => {
       element["Start of Week"] = dateArr;
     });
     setArr(arr);
+    setLoader((prev) => {
+      let temp = prev;
+      temp.graph = true;
+      return temp;
+    });
   } catch (e) {
     console.error("Couldnt fetch graph data", e);
+    setLoader((prev) => {
+      let temp = prev;
+      temp.graph = true;
+      return temp;
+    });
   }
 };
 
+const getPieData = async (transactions, setArr, setLoader) => {
+  if (!transactions) {
+    toast.error("Couldnt load bar graph");
+    setLoader((prev) => {
+      let temp = prev;
+      temp.pie = true;
+      return temp;
+    });
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:5000/api/categorize`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ transactions: transactions }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Couldnt fetch pie data");
+      setArr([]);
+      setLoader((prev) => {
+        let temp = prev;
+        temp.pie = true;
+        return temp;
+      });
+      return;
+    }
+    let arr = data.categories;
+    let result = [];
+    // convert to name value
+    Object.keys(arr).forEach((cat) =>
+      result.push({ name: cat, value: arr[cat] })
+    );
+    setArr(result);
+    setLoader((prev) => {
+      let temp = prev;
+      temp.pie = true;
+      return temp;
+    });
+  } catch (e) {
+    console.error("Couldnt fetch graph data", e);
+    setLoader((prev) => {
+      let temp = prev;
+      temp.pie = true;
+      return temp;
+    });
+  }
+};
+
+const AIRequest = async ({ systemPrompt, userPrompt, setAnalysis }) => {
+  const completion = await api.chat.completions.create({
+    model: "deepseek/deepseek-r1",
+    messages: [
+      {
+        role: "system",
+        content: systemPrompt,
+      },
+      {
+        role: "user",
+        content: userPrompt,
+      },
+    ],
+    temperature: 0.7,
+    max_tokens: 256,
+  });
+
+  const response = completion.choices[0].message.content;
+
+  console.log("Deepseak response", response, typeof response);
+  setAnalysis(response?.split("\n"));
+};
+
 const Reports = () => {
-  const { user, summaryData, dark, AIRequest, allTransactions } = useContext(AppContext);
+  const { user, summaryData, dark, allTransactions } = useContext(AppContext);
   const [weekArray, setWeekArray] = useState([]);
-  const [categoryArray, setCategoryArray] = useState([
-    { name: "Income", value: summaryData.running_credits },
-    {
-      name: "Expenses",
-      value: summaryData.running_debits - summaryData.running_charges,
-    },
-    { name: "Charges", value: summaryData.running_charges },
-  ]);
+  const [analysis, setAnalysis] = useState(null);
+  const [categoryArray, setCategoryArray] = useState([]);
+  const [loader, setLoader] = useState({ pie: false, graph: false });
+  console.log(JSON.stringify(categoryArray).length)
 
   useEffect(() => {
-    getBarGraphData(user.sub, setWeekArray);
-    // AIRequest({
-    //   systemPrompt:
-    //     "You are a data analyst specializing in categorizing bank transactions into categories",
-    //   userPrompt: `Categorize the following transctions and return only an array on the form 
-    //   [
-    //     { name: "Name_of_category", value: total_change },
-    //   ];
-      
-    //   ${allTransactions}
-    //   `,
-    // });
-  });
+    getBarGraphData(user.sub, setWeekArray, setLoader);
+    getPieData(allTransactions, setCategoryArray, setLoader)
+    // try {
+    //   AIRequest({
+    //     systemPrompt:
+    //       "Your'e a descriptive and helpful financial advisor. Be desctiptive and structured in your responses",
+    //     userPrompt: `${JSON.stringify(categoryArray)} advise someone with this`,
+    //     setAnalysis: setAnalysis,
+    //   });
+    // } catch (e) {
+    //   console.log("Error", e);
+    // }
+  }, []);
 
   return (
     <main className="reports-main">
@@ -98,10 +198,13 @@ const Reports = () => {
       </section>
 
       <section className="reports-section mid-section">
-        <BarGraph weekArray={weekArray} dark={dark} />
-        <PieGraph categoryArray={categoryArray} />
+        <BarGraph weekArray={weekArray} dark={dark} loader={loader.graph} />
+        <PieGraph categoryArray={categoryArray} loader={loader.pie} />
       </section>
-      <section className="reports-section low-section"></section>
+      <section className="reports-section low-section">
+        <h1>AI Analysis</h1>
+        <p>{analysis}</p>
+      </section>
     </main>
   );
 };

@@ -9,7 +9,6 @@ const add_dates = (allTransactions) => {
 };
 
 const create_summary_data = (transactions) => {
-  console.log(transactions);
   if (transactions.length === 0) return { statements: [], banks: [] };
   const summaryData = {
     statements: [],
@@ -95,7 +94,7 @@ const ammend_summary_data = (summaryData) => {
 };
 const join_summary_data = (arr1, arr2) => {
   // assuming arrays are two correct summaries of statements
-  console.log(arr1, arr2);
+
   const summaryData = {
     statements: [...arr1.statements, ...arr2.statements],
     banks: [...arr1.banks, ...arr2.banks],
@@ -118,8 +117,6 @@ const join_summary_data = (arr1, arr2) => {
     summaryData.initial_balance +
     summaryData.running_credits -
     summaryData.running_debits;
-
-  console.log(summaryData);
 
   return summaryData;
 };

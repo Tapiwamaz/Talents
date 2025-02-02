@@ -115,7 +115,7 @@ const RootLayout = () => {
               onError={() => {
                 console.log("Login Failed");
               }}
-              theme="outline"
+              theme={dark ?  "filled_black":'outline'}
               shape="pill"
               type="standard"
               ux_mode="popup"

@@ -1,9 +1,16 @@
 import React, { useState } from "react";
-import { PieChart, Pie, Sector, ResponsiveContainer,Cell,Legend } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Sector,
+  ResponsiveContainer,
+  Cell,
+  Legend,
+} from "recharts";
 // helpers
 import { toCurrency } from "../../Helpers/TextAndNumberFomats";
 
-const COLORS = [ "#00C49F","#FFBB28","#0088FE", "#FF8042"];
+const COLORS = ["#888888", "darkturquoise", "green", "navy", "coral", "sienna"];
 const renderActiveShape = (props) => {
   const RADIAN = Math.PI / 180;
   const {
@@ -77,7 +84,7 @@ const renderActiveShape = (props) => {
   );
 };
 
-const PieGraph = ({ categoryArray }) => {
+const PieGraph = ({ categoryArray, loader }) => {
   const [state, setState] = useState({
     activeIndex: 0,
   });
@@ -88,26 +95,36 @@ const PieGraph = ({ categoryArray }) => {
     });
   };
 
+
   return (
     <ResponsiveContainer width="50%" height="100%" className="bar-graph">
-      <PieChart>
-        <Pie
-          activeIndex={state.activeIndex}
-          activeShape={renderActiveShape}
-          data={categoryArray}
-          cx="50%"
-          cy="50%"
-          innerRadius={75}
-          outerRadius={100}
-          dataKey="value"
-          onMouseEnter={onPieEnter}
-        >
-             {categoryArray.map((_, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Legend/>
-      </PieChart>
+      {loader ? (
+        <PieChart>
+          <Pie
+            activeIndex={state.activeIndex}
+            activeShape={renderActiveShape}
+            data={categoryArray}
+            cx="50%"
+            cy="50%"
+            innerRadius={75}
+            outerRadius={100}
+            dataKey="value"
+            onMouseEnter={onPieEnter}
+          >
+            {categoryArray.map((_, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+              />
+            ))}
+          </Pie>
+          <Legend />
+        </PieChart>
+      ) : (
+        <div className="center-loader">
+          <div className="loader" />
+        </div>
+      )}
     </ResponsiveContainer>
   );
 };

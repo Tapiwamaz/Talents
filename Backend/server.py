@@ -1,24 +1,19 @@
 from  flask import Flask, request, jsonify
 from flask_cors import CORS
-import psycopg2
 from psycopg2 import errors
 import PDFReader as reader
-import ast
-import DB 
+from DB import connect_to_db
+from CategorizeData import categorize_main
 
 app = Flask(__name__)
 CORS(app)
 
 # API routes
+# users --------------------------------------------------------------------------------------------------------------------------------
 @app.route('/api/users/<user_id>',methods=['POST'])
 def create_user(user_id):
     try:
-        connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                      user=DB.DB_CONFIG["user"],
-                                      host=DB.DB_CONFIG["host"],
-                                      password=DB.DB_CONFIG["password"])
-        cursor = connection.cursor()
-        
+        connection, cursor = connect_to_db()
         cursor.execute(""" 
                         insert into users (user_id) 
                         values (%s)
@@ -36,6 +31,9 @@ def create_user(user_id):
             cursor.close()
         if connection:
             connection.close()
+# users --------------------------------------------------------------------------------------------------------------------------------
+
+# stratements and transations --------------------------------------------------------------------------------------------------------------------------------
 
 @app.route('/api/statement',methods=['POST','DELETE'])
 def save_fetch_statement():
@@ -49,12 +47,7 @@ def save_fetch_statement():
         statement_name = req["name"] 
         sub = req["sub"] 
         try: 
-            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                        user=DB.DB_CONFIG["user"],
-                                        host=DB.DB_CONFIG["host"],
-                                        password=DB.DB_CONFIG["password"])
-            cursor = connection.cursor()
-            
+            connection, cursor = connect_to_db()
             cursor.execute(""" 
                             insert into statements (user_id,statement_name,num_transactions,running_balance,
                             initial_balance,running_charges,running_debits,running_credits,start_date,end_date,bank) 
@@ -83,11 +76,7 @@ def save_fetch_statement():
         statement_name = req["statement_name"] 
         sub = req["sub"] 
         try: 
-            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                        user=DB.DB_CONFIG["user"],
-                                        host=DB.DB_CONFIG["host"],
-                                        password=DB.DB_CONFIG["password"])
-            cursor = connection.cursor()
+            connection, cursor = connect_to_db()
             
             cursor.execute(""" 
                             delete from statements where statement_name=%s and user_id=%s; 
@@ -114,11 +103,7 @@ def save_fetch_statement():
 @app.route('/api/statements/<id>', methods=['GET'])
 def fetch_statements(id):
     try:
-        connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                    user=DB.DB_CONFIG["user"],
-                                    host=DB.DB_CONFIG["host"],
-                                    password=DB.DB_CONFIG["password"])
-        cursor = connection.cursor()
+        connection, cursor = connect_to_db()
         cursor.execute("Select (start_date,end_date,initial_balance,running_charges, running_debits, running_credits,running_balance ,num_transactions,bank, statement_name) from statements where user_id=%s",(str(id),))
         
         results = cursor.fetchall()
@@ -150,97 +135,86 @@ def fetch_statements(id):
     
 @app.route('/api/transactions/<user_id>', methods=['GET'])
 def fetch_transactions(user_id):
-    if request.method == 'GET':
+    try:
+        connection, cursor = connect_to_db()
+        cursor.execute("Select (date,details,change,credit,service_charge,balance,statement_name) from transactions where user_id=%s order by date desc",(str(user_id),))
         
-        try:
-            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                        user=DB.DB_CONFIG["user"],
-                                        host=DB.DB_CONFIG["host"],
-                                        password=DB.DB_CONFIG["password"])
-            cursor = connection.cursor()
-            cursor.execute("Select (date,details,change,credit,service_charge,balance,statement_name) from transactions where user_id=%s order by date desc",(str(user_id),))
-            
-            results = cursor.fetchall()
-            
-            column_names = ["full_date", "details", "change", "credit", "service_charge", "balance","statement_name"]
-            if results:
-                transactions = []
-                for row in results:
-                    line_array  = row[0][1:len(row[0])-1].split(",")
-                    trans = {}
-                    for i in range(0,len(line_array)):
-                        trans[column_names[i]] = line_array[i]
-                        
-                    trans["date"] = trans["full_date"][8:11]        
-                    trans["month"] = trans["full_date"][5:7]        
-                    trans["year"] = int(trans["full_date"][0:4])
-                    trans["balance"] = float(trans["balance"])
-                    trans["change"] = float(trans["change"])
-                    trans["details"] = trans["details"][1: len(trans["details"])-1]
+        results = cursor.fetchall()
+        
+        column_names = ["full_date", "details", "change", "credit", "service_charge", "balance","statement_name"]
+        if results:
+            transactions = []
+            for row in results:
+                line_array  = row[0][1:len(row[0])-1].split(",")
+                trans = {}
+                for i in range(0,len(line_array)):
+                    trans[column_names[i]] = line_array[i]
                     
-                    if "t" == trans["service_charge"]:
-                        trans["service_charge"] = True
-                    else:
-                        trans["service_charge"] = False
-                    if "t" == trans["credit"]:
-                        trans["credit"] = True
-                    else:
-                        trans["credit"] = False
-                             
-                             
-                    
-                    transactions.append(trans)
-                return jsonify({"transactions": transactions}), 200
-                # return transactions, 200
-            else:
-                return jsonify({"transactions": []}), 200
-        except Exception as e:
-            return jsonify({"Error": str(e)}), 500
+                trans["date"] = trans["full_date"][8:11]        
+                trans["month"] = trans["full_date"][5:7]        
+                trans["year"] = int(trans["full_date"][0:4])
+                trans["balance"] = float(trans["balance"])
+                trans["change"] = float(trans["change"])
+                trans["details"] = trans["details"][1: len(trans["details"])-1]
+                
+                if "t" == trans["service_charge"]:
+                    trans["service_charge"] = True
+                else:
+                    trans["service_charge"] = False
+                if "t" == trans["credit"]:
+                    trans["credit"] = True
+                else:
+                    trans["credit"] = False
+                            
+                            
+                
+                transactions.append(trans)
+            return jsonify({"transactions": transactions}), 200
+            # return transactions, 200
+        else:
+            return jsonify({"transactions": []}), 200
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 500
                       
 
 @app.route('/api/transactions', methods=['POST'])
 def save_transactions():
     req = request.get_json()
  
-    if request.method == 'POST':
-        if 'transactions' not in req or 'name' not in req or 'sub' not in req:
-            return jsonify({"Error": "Insufficient information"}), 400
-            
-        transactions = req["transactions"]
-        statement_name = req["name"] 
-        sub = req["sub"] 
+  
+    if 'transactions' not in req or 'name' not in req or 'sub' not in req:
+        return jsonify({"Error": "Insufficient information"}), 400
         
-        try: 
-            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                        user=DB.DB_CONFIG["user"],
-                                        host=DB.DB_CONFIG["host"],
-                                        password=DB.DB_CONFIG["password"])
-            cursor = connection.cursor()
-            
-            for transaction in transactions:
-                temp_date = transaction["full_date"]
-                cursor.execute(""" 
-                                insert into transactions (user_id,statement_name,details,balance,
-                                date,change,credit,service_charge) 
-                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                            """,
-                                (sub,statement_name, transaction["details"], transaction["balance"],
-                                transaction["full_date"],transaction["change"],transaction["credit"],
-                                transaction["service_charge"],)
-                            )
-                
-            connection.commit()
-            return jsonify({"Success": "Transactions saved"}), 200
+    transactions = req["transactions"]
+    statement_name = req["name"] 
+    sub = req["sub"] 
     
-        except Exception as e:
-            return jsonify({"Error": str(e)}), 401
-        finally:
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
+    try: 
+        connection, cursor = connect_to_db()
+        for transaction in transactions:
+            temp_date = transaction["full_date"]
+            cursor.execute(""" 
+                            insert into transactions (user_id,statement_name,details,balance,
+                            date,change,credit,service_charge) 
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        """,
+                            (sub,statement_name, transaction["details"], transaction["balance"],
+                            transaction["full_date"],transaction["change"],transaction["credit"],
+                            transaction["service_charge"],)
+                        )
+            
+        connection.commit()
+        return jsonify({"Success": "Transactions saved"}), 200
 
-# Statements are uplaoded
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 401
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
 @app.route('/api/upload', methods=['POST'])
 def upload_pdf():
     if 'file' not in request.files:
@@ -282,60 +256,51 @@ def upload_pdf():
         return jsonify(temp), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+# stratements and transations --------------------------------------------------------------------------------------------------------------------------------
  
-# create a new budget 
+# budgets --------------------------------------------------------------------------------------------------------------------------------
+
 @app.route('/api/budgets/create',methods=['POST'])
 def budgets():
     req = request.get_json()
     
-    if request.method == 'POST':
-        if 'sub' not in req or 'name' not in req or 'category' not in req or 'start_date' not in req or 'end_date' not in req or 'total_amount' not in req:
-            return jsonify({"Error": "Not enough information provided"}), 400
+    if 'sub' not in req or 'name' not in req or 'category' not in req or 'start_date' not in req or 'end_date' not in req or 'total_amount' not in req:
+        return jsonify({"Error": "Not enough information provided"}), 400
+    
+    name = req["name"]
+    category = req["category"]
+    start_date = req["start_date"]
+    end_date = req["end_date"]
+    total = req["total_amount"]
+    sub = req["sub"] 
+    try: 
+        connection, cursor = connect_to_db()
+        cursor.execute(""" 
+                        insert into budgets (user_id,name,category,start_date,end_date,total_amount) 
+                        VALUES (%s, %s, %s, %s, %s, %s) RETURNING budget_id;
+                    """,
+                        (sub,name, category,start_date,end_date,total,)
+                    )
         
-        name = req["name"]
-        category = req["category"]
-        start_date = req["start_date"]
-        end_date = req["end_date"]
-        total = req["total_amount"]
-        sub = req["sub"] 
-        try: 
-            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                        user=DB.DB_CONFIG["user"],
-                                        host=DB.DB_CONFIG["host"],
-                                        password=DB.DB_CONFIG["password"])
-            cursor = connection.cursor()
-            
-            cursor.execute(""" 
-                            insert into budgets (user_id,name,category,start_date,end_date,total_amount) 
-                            VALUES (%s, %s, %s, %s, %s, %s) RETURNING budget_id;
-                        """,
-                            (sub,name, category,start_date,end_date,total,)
-                        )
-            
-            results = cursor.fetchone()
-            budget_id = results[0]
-            connection.commit()
-            return jsonify({"budget_id":budget_id}), 200
-        except errors.UniqueViolation:
-            return jsonify({"Error": "Budget already exists!"}), 201
-        except Exception as e:
-            return jsonify({"Error": str(e)}), 401
-        finally:
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close() 
- 
+        results = cursor.fetchone()
+        budget_id = results[0]
+        connection.commit()
+        return jsonify({"budget_id":budget_id}), 200
+    except errors.UniqueViolation:
+        return jsonify({"Error": "Budget already exists!"}), 201
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 401
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close() 
 
 @app.route('/api/budgets/<id>' ,methods=['GET','DELETE'])
 def get_budgets(id):
     if request.method == 'GET':
         try: 
-            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                        user=DB.DB_CONFIG["user"],
-                                        host=DB.DB_CONFIG["host"],
-                                        password=DB.DB_CONFIG["password"])
-            cursor = connection.cursor()
+            connection, cursor = connect_to_db()
             
             cursor.execute(""" 
                             select b.user_id,b.name, b.category,b.start_date,b.end_date,b.total_amount,b.budget_id, SUM(e.amount) as e_amount  from budgets b 
@@ -381,12 +346,7 @@ def get_budgets(id):
                 
     elif request.method == 'DELETE':
         try: 
-            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                        user=DB.DB_CONFIG["user"],
-                                        host=DB.DB_CONFIG["host"],
-                                        password=DB.DB_CONFIG["password"])
-            cursor = connection.cursor()
-            
+            connection, cursor = connect_to_db()
             cursor.execute(""" 
                         delete from budgets where budget_id=%s;
                         """,
@@ -403,7 +363,10 @@ def get_budgets(id):
                 cursor.close()
             if connection:
                 connection.close()
+# budgets --------------------------------------------------------------------------------------------------------------------------------
 
+
+# expenses --------------------------------------------------------------------------------------------------------------------------------
 @app.route('/api/expenses', methods=['POST'])
 def expenses():
     
@@ -417,12 +380,7 @@ def expenses():
     description = req["description"]
     
     try: 
-        connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                    user=DB.DB_CONFIG["user"],
-                                    host=DB.DB_CONFIG["host"],
-                                    password=DB.DB_CONFIG["password"])
-        cursor = connection.cursor()
-        
+        connection, cursor = connect_to_db()
         cursor.execute(""" 
                         insert into expenses (budget_id,amount,description) 
                         VALUES (%s, %s, %s) RETURNING expense_id,created_at;
@@ -443,17 +401,12 @@ def expenses():
             connection.close() 
 
 
-# get and create expenses
 @app.route('/api/expenses/<id>', methods=['GET', 'DELETE'])
 def get_expenses(id):
 
     if request.method == 'GET':
         try: 
-            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                        user=DB.DB_CONFIG["user"],
-                                        host=DB.DB_CONFIG["host"],
-                                        password=DB.DB_CONFIG["password"])
-            cursor = connection.cursor()
+            connection, cursor = connect_to_db()
             
             cursor.execute(""" 
                                 select e.expense_id,e.description,e.amount,e.created_at,b.budget_id from expenses e inner join budgets b on 
@@ -497,11 +450,7 @@ def get_expenses(id):
             return jsonify({"Error": "Expense id invalid"}),404   
 
         try: 
-            connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                        user=DB.DB_CONFIG["user"],
-                                        host=DB.DB_CONFIG["host"],
-                                        password=DB.DB_CONFIG["password"])
-            cursor = connection.cursor()
+            connection, cursor = connect_to_db()
             
             cursor.execute(""" 
                                 delete from expenses where expense_id=%s;
@@ -520,16 +469,13 @@ def get_expenses(id):
                 cursor.close()
             if connection:
                 connection.close()
+# expenses --------------------------------------------------------------------------------------------------------------------------------
+
 
 @app.route('/api/summaries/<id>',methods=['GET'])
-def get_summaries(id):
-    try: 
-        connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                    user=DB.DB_CONFIG["user"],
-                                    host=DB.DB_CONFIG["host"],
-                                    password=DB.DB_CONFIG["password"])
-        cursor = connection.cursor()
-        
+def get_summaries(id): 
+    try:   
+        connection, cursor = connect_to_db()
         cursor.execute(""" 
                             select DATE_TRUNC('week',date) as week_start,
                             sum(case when credit and not service_charge then change end) as income, 
@@ -571,16 +517,27 @@ def get_summaries(id):
             cursor.close()
         if connection:
             connection.close()
+
+@app.route('/api/categorize',methods=['POST'])
+def categorize_transations():
+    req = 0
+    try:
+        req = request.get_json()
+        if 'transactions' not in req:
+            raise Exception("No transactions given")
+    except Exception as e:
+        return jsonify({"Error getting transactions": str(e)}),400 
+    
+    try:   
+        result =categorize_main(req['transactions'])
+        return jsonify({'categories': result}),200
+    except Exception as e:
+        return jsonify({"Error categorizing transactions": str(e)}),400 
     
 @ app.route("/api/clearall/<id>",methods=['DELETE'])
 def clearall(id):
     try: 
-        connection = psycopg2.connect(dbname=DB.DB_CONFIG["database"],
-                                    user=DB.DB_CONFIG["user"],
-                                    host=DB.DB_CONFIG["host"],
-                                    password=DB.DB_CONFIG["password"])
-        cursor = connection.cursor()
-        
+        connection, cursor = connect_to_db()
         cursor.execute("""delete from budgets where user_id=%s;""",(str(id),))
         cursor.execute("""delete from statements where user_id=%s;""",(str(id),))
         cursor.execute("""delete from transactions where user_id=%s;""",(str(id),))

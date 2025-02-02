@@ -11,9 +11,10 @@ import {
   Label,
 } from "recharts";
 
-const BarGraph = ({ weekArray, dark }) => {
+const BarGraph = ({ weekArray, dark,loader }) => {
   return (
     <ResponsiveContainer width="50%" className="bar-graph">
+      {loader ? 
       <BarChart
         data={weekArray}
         margin={{
@@ -50,7 +51,7 @@ const BarGraph = ({ weekArray, dark }) => {
         <Bar dataKey="Income" stackId="a" fill="green" />
         <Bar dataKey="Expenses" stackId="b" fill="rgb(200,10,10)" />
         <Bar dataKey="Charges" stackId="b" fill="rgb(128,128,128)" />
-      </BarChart>
+      </BarChart>: <div className="center-loader"><div className="loader"/></div>}
     </ResponsiveContainer>
   );
 };

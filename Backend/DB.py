@@ -1,5 +1,7 @@
 from dotenv import load_dotenv
 import os
+import psycopg2
+from psycopg2 import errors
 
 load_dotenv()
 
@@ -15,3 +17,10 @@ DB_CONFIG = {
     'user': USER,
     'password': PASSWORD
 }
+def connect_to_db():
+    connection = psycopg2.connect(dbname=DB_CONFIG["database"],
+                                        user=DB_CONFIG["user"],
+                                        host=DB_CONFIG["host"],
+                                        password=DB_CONFIG["password"])
+    cursor = connection.cursor()
+    return connection, cursor
