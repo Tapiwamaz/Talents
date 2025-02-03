@@ -5,8 +5,6 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import logging 
-
-
 from flask_cors import CORS
 
 
