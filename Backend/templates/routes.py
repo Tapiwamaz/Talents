@@ -1,5 +1,10 @@
-from flask import request
+from flask import request,render_template
 from app import app, db
+
+@app.route("/", methods=["GET"])
+def index():
+    return render_template("index.html")
+
 
 @app.route('/api/x',methods=['GET'])
 def x():
