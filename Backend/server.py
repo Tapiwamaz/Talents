@@ -13,6 +13,7 @@ CORS(app)
 # dummy
 @app.route('/api/x',methods=['GET'])
 def x():
+    connection, cursor = connect_to_db()
     return 'Fancy meeting you here!',200
 
 # users --------------------------------------------------------------------------------------------------------------------------------
@@ -562,5 +563,6 @@ def clearall(id):
         
 
 if __name__ == '__main__':
+    x()
     app.run(debug=True)    
     # app.run(host='10.0.0.11',debug=True)    
