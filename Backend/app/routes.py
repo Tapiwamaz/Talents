@@ -1,5 +1,5 @@
 from flask import request,render_template
-from app import app, db
+from app import app, db , PDFReader, DB, CategorizeData
 
 @app.route("/", methods=["GET"])
 def index():
@@ -8,14 +8,14 @@ def index():
 
 @app.route('/api/x',methods=['GET'])
 def x():
-    connection, cursor = connect_to_db()
+    connection, cursor = DB.connect_to_db()
     return 'Fancy meeting you here!',200
 
 # users --------------------------------------------------------------------------------------------------------------------------------
 @app.route('/api/users/<user_id>',methods=['POST'])
 def create_user(user_id):
     try:
-        connection, cursor = connect_to_db()
+        connection, cursor = DB.connect_to_db()
         cursor.execute(""" 
                         insert into users (user_id) 
                         values (%s)
@@ -49,7 +49,7 @@ def save_fetch_statement():
         statement_name = req["name"] 
         sub = req["sub"] 
         try: 
-            connection, cursor = connect_to_db()
+            connection, cursor = DB.connect_to_db()
             cursor.execute(""" 
                             insert into statements (user_id,statement_name,num_transactions,running_balance,
                             initial_balance,running_charges,running_debits,running_credits,start_date,end_date,bank) 
@@ -78,7 +78,7 @@ def save_fetch_statement():
         statement_name = req["statement_name"] 
         sub = req["sub"] 
         try: 
-            connection, cursor = connect_to_db()
+            connection, cursor = DB.connect_to_db()
             
             cursor.execute(""" 
                             delete from statements where statement_name=%s and user_id=%s; 
@@ -105,7 +105,7 @@ def save_fetch_statement():
 @app.route('/api/statements/<id>', methods=['GET'])
 def fetch_statements(id):
     try:
-        connection, cursor = connect_to_db()
+        connection, cursor = DB.connect_to_db()
         cursor.execute("Select (start_date,end_date,initial_balance,running_charges, running_debits, running_credits,running_balance ,num_transactions,bank, statement_name) from statements where user_id=%s",(str(id),))
         
         results = cursor.fetchall()
@@ -138,7 +138,7 @@ def fetch_statements(id):
 @app.route('/api/transactions/<user_id>', methods=['GET'])
 def fetch_transactions(user_id):
     try:
-        connection, cursor = connect_to_db()
+        connection, cursor = DB.connect_to_db()
         cursor.execute("Select (date,details,change,credit,service_charge,balance,statement_name) from transactions where user_id=%s order by date desc",(str(user_id),))
         
         results = cursor.fetchall()
@@ -192,7 +192,7 @@ def save_transactions():
     sub = req["sub"] 
     
     try: 
-        connection, cursor = connect_to_db()
+        connection, cursor = DB.connect_to_db()
         for transaction in transactions:
             temp_date = transaction["full_date"]
             cursor.execute(""" 
@@ -228,7 +228,7 @@ def upload_pdf():
 
     try:
         # Process the uploaded PDF
-        transactions = reader.read_transactions(file)
+        transactions = PDFReader.read_transactions(file)
         transaction_data = [
             {
                 "id": transaction.id,
@@ -276,7 +276,7 @@ def budgets():
     total = req["total_amount"]
     sub = req["sub"] 
     try: 
-        connection, cursor = connect_to_db()
+        connection, cursor = DB.connect_to_db()
         cursor.execute(""" 
                         insert into budgets (user_id,name,category,start_date,end_date,total_amount) 
                         VALUES (%s, %s, %s, %s, %s, %s) RETURNING budget_id;
@@ -302,7 +302,7 @@ def budgets():
 def get_budgets(id):
     if request.method == 'GET':
         try: 
-            connection, cursor = connect_to_db()
+            connection, cursor = DB.connect_to_db()
             
             cursor.execute(""" 
                             select b.user_id,b.name, b.category,b.start_date,b.end_date,b.total_amount,b.budget_id, SUM(e.amount) as e_amount  from budgets b 
@@ -348,7 +348,7 @@ def get_budgets(id):
                 
     elif request.method == 'DELETE':
         try: 
-            connection, cursor = connect_to_db()
+            connection, cursor = DB.connect_to_db()
             cursor.execute(""" 
                         delete from budgets where budget_id=%s;
                         """,
@@ -382,7 +382,7 @@ def expenses():
     description = req["description"]
     
     try: 
-        connection, cursor = connect_to_db()
+        connection, cursor = DB.connect_to_db()
         cursor.execute(""" 
                         insert into expenses (budget_id,amount,description) 
                         VALUES (%s, %s, %s) RETURNING expense_id,created_at;
@@ -408,7 +408,7 @@ def get_expenses(id):
 
     if request.method == 'GET':
         try: 
-            connection, cursor = connect_to_db()
+            connection, cursor = DB.connect_to_db()
             
             cursor.execute(""" 
                                 select e.expense_id,e.description,e.amount,e.created_at,b.budget_id from expenses e inner join budgets b on 
@@ -452,7 +452,7 @@ def get_expenses(id):
             return jsonify({"Error": "Expense id invalid"}),404   
 
         try: 
-            connection, cursor = connect_to_db()
+            connection, cursor = DB.connect_to_db()
             
             cursor.execute(""" 
                                 delete from expenses where expense_id=%s;
@@ -477,7 +477,7 @@ def get_expenses(id):
 @app.route('/api/summaries/<id>',methods=['GET'])
 def get_summaries(id): 
     try:   
-        connection, cursor = connect_to_db()
+        connection, cursor = DB.connect_to_db()
         cursor.execute(""" 
                             select DATE_TRUNC('week',date) as week_start,
                             sum(case when credit and not service_charge then change end) as income, 
@@ -531,7 +531,7 @@ def categorize_transations():
         return jsonify({"Error getting transactions": str(e)}),400 
     
     try:   
-        result =categorize_main(req['transactions'])
+        result = CategorizeData.categorize_main(req['transactions'])
         return jsonify({'categories': result}),200
     except Exception as e:
         return jsonify({"Error categorizing transactions": str(e)}),400 
@@ -539,7 +539,7 @@ def categorize_transations():
 @ app.route("/api/clearall/<id>",methods=['DELETE'])
 def clearall(id):
     try: 
-        connection, cursor = connect_to_db()
+        connection, cursor = DB.connect_to_db()
         cursor.execute("""delete from budgets where user_id=%s;""",(str(id),))
         cursor.execute("""delete from statements where user_id=%s;""",(str(id),))
         cursor.execute("""delete from transactions where user_id=%s;""",(str(id),))
