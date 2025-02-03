@@ -7,8 +7,6 @@ from flask_migrate import Migrate
 import logging 
 
 from flask_cors import CORS
-from psycopg2 import errors
-import psycopg2
 
 
 
@@ -19,7 +17,7 @@ CORS(app)
 db = SQLAlchemy(app)
 migrate= Migrate(app,db)
 
-from app import DB, CategorizeData, PDFReader
+from app import routes, DB, CategorizeData, PDFReader
 
 if not app.debug:
     stream_handler = logging.StreamHandler()

@@ -1,9 +1,10 @@
 from flask import request,render_template
 from app import app, db , PDFReader, DB, CategorizeData
+from psycopg2 import errors
 
-@app.route("/", methods=["GET"])
+@app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template('index.html')
 
 
 @app.route('/api/x',methods=['GET'])
