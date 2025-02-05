@@ -15,18 +15,15 @@ import News from "./Pages/News/News";
 import Reports from "./Pages/Reports/Reports";
 import Profile from "./Pages/Profile/Profile";
 import Summaries from "./Pages/Summaries/Summaries";
-// auth
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import SpecificBudget from "./Pages/SpecificBudget/SpecificBudget";
 import ErrorPage from "./Pages/ErrorPage/ErrorPage";
 
-
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<RootLayout />} errorElement={<ErrorPage/>}>
+    <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
       <Route index element={<Home />}></Route>
       <Route path="budgets" element={<Budgets />}></Route>
-      <Route path="budgets/:budget_id" element={<SpecificBudget/>} ></Route>
+      <Route path="budgets/:budget_id" element={<SpecificBudget />}></Route>
 
       <Route path="reports" element={<Reports />}></Route>
       <Route path="news" element={<News />}></Route>
@@ -37,11 +34,7 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return (
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>
-      <RouterProvider router={router} />
-    </GoogleOAuthProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

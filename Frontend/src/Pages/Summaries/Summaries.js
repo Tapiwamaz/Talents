@@ -105,7 +105,7 @@ const saveStatement = async (
     if (!response.ok) {
       throw new Error("Something went wrong with the statement");
     }
-    const data = await response.json();
+    // const data = await response.json();
     // console.log(data);
 
     saveTransactions(file.name, subToken, transactions, setUploadedTrans);

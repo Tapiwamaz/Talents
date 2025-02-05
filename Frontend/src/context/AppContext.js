@@ -191,16 +191,11 @@ const fetch_expenses = async (user, setAllExpenses, setLoadingBooleans) => {
 };
 
 const AppContextProvider = (props) => {
-  const [user, setUser] = useState({
-    name: "Tapiwa",
-    surname: "Mazarura",
-    picture: "https://picsum.photos/200",
-    email: "mazarura@gmail.com",
-    sub: "117604033210378294446",
-  });
+
+  const [user, setUser] = useState({});
 
   const [loaded, setLoaded] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [allTransactions, setAllTransactions] = useState([]);
   const [fetchedTransactions, setFetchedTransactions] = useState([]);
   const [transactions, setTransactions] = useState([]);

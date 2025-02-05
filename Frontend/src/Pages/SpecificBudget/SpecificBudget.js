@@ -1,6 +1,6 @@
 // react
-import { useContext, useEffect, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router";
+import { useContext } from "react";
+import { Navigate, useParams } from "react-router";
 // css
 import "./SpecificBudget.css";
 // context

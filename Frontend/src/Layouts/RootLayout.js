@@ -8,39 +8,38 @@ import { UserCircleIcon } from "@heroicons/react/24/outline";
 // context
 import { AppContext } from "../context/AppContext";
 // login helpers
-import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
+
+import { auth, googleProvider } from "../Auth/firebaseConfig";
+
+import { signInWithPopup } from "firebase/auth";
+
+// toast
 import { Toaster } from "react-hot-toast";
 
-// function
-const login = async ({
-  email,
-  given_name,
-  family_name,
-  picture,
-  sub,
-  setLoggedIn,
-  setUser,
-}) => {
+const loginWithGoogle = async ({ setLoggedIn, setUser }) => {
   try {
-    const response = await fetch(`http://localhost:5000/api/users/${sub}`, {
-      method: "POST",
-    });
+    await signInWithPopup(auth, googleProvider);
+    const user = auth.currentUser;
+
+    const response = await fetch(
+      `https://talents-backend-27b727379837.herokuapp.com/api/users/${user.uid}`,
+      {
+        method: "POST",
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Something went wrong on login/signup");
     }
-
     setUser({
-      name: given_name,
-      surname: family_name,
-      picture: picture,
-      email: email,
-      sub: sub,
+      name: user.displayName,
+      email: user.email,
+      picture: user.photoURL,
+      sub: user.uid,
     });
     setLoggedIn(true);
-  } catch (e) {
-    console.error("Error:", e);
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -97,7 +96,7 @@ const RootLayout = () => {
         </nav>
         {!loggedIn ? (
           <div className="user-icon-container">
-            <GoogleLogin
+            {/* <GoogleLogin
               onSuccess={(credentialResponse) => {
                 const { email, given_name, family_name, picture, sub } =
                   jwtDecode(credentialResponse.credential);
@@ -115,18 +114,28 @@ const RootLayout = () => {
               onError={() => {
                 console.log("Login Failed");
               }}
-              theme={dark ?  "filled_black":'outline'}
+              theme={dark ? "filled_black" : "outline"}
               shape="pill"
               type="standard"
               ux_mode="popup"
               itp_support
               size="large"
               useOneTap
-            />
+            /> */}
+            <button
+              onClick={() =>
+                loginWithGoogle({
+                  setLoggedIn: setLoggedIn,
+                  setUser: setUser,
+                })
+              }
+            >
+              Login
+            </button>
           </div>
         ) : (
           <NavLink to={"profile"} className="user-icon-container root-navlink">
-            {user.picture ? (
+            {user && user.picture ? (
               <img
                 src={user.picture}
                 alt="ProfilePic"

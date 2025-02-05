@@ -3,7 +3,6 @@ import "./Profile.css";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 // auth
-import { googleLogout } from "@react-oauth/google";
 //context
 import { AppContext } from "../../context/AppContext";
 // icons
@@ -38,7 +37,6 @@ const logoutClickHandler = (
   setAllBudgets,
   nav
 ) => {
-  googleLogout();
   setUserInfo({});
   setLoggedIn(false);
   setLoaded(false);

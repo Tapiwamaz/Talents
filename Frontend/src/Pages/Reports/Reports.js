@@ -5,19 +5,7 @@ import SummaryCard from "../../Components/ReportsComponents/SummaryCard";
 import BarGraph from "../../Components/ReportsComponents/BarGraph";
 import PieGraph from "../../Components/ReportsComponents/PieGraph";
 import toast from "react-hot-toast";
-// OPENAI
-import OpenAI from "openai";
 
-// console.log(process.env)
-
-const baseURL = "https://api.aimlapi.com/v1";
-const apiKey = process.env.REACT_APP_OPENAI_KEY;
-
-const api = new OpenAI({
-  apiKey,
-  baseURL,
-  dangerouslyAllowBrowser: true,
-});
 
 const getBarGraphData = async (sub, setArr, setLoader) => {
   if (!sub) {
@@ -126,33 +114,10 @@ const getPieData = async (transactions, setArr, setLoader) => {
   }
 };
 
-const AIRequest = async ({ systemPrompt, userPrompt, setAnalysis }) => {
-  const completion = await api.chat.completions.create({
-    model: "deepseek/deepseek-r1",
-    messages: [
-      {
-        role: "system",
-        content: systemPrompt,
-      },
-      {
-        role: "user",
-        content: userPrompt,
-      },
-    ],
-    temperature: 0.7,
-    max_tokens: 256,
-  });
-
-  const response = completion.choices[0].message.content;
-
-  console.log("Deepseak response", response, typeof response);
-  setAnalysis(response?.split("\n"));
-};
 
 const Reports = () => {
   const { user, summaryData, dark, allTransactions } = useContext(AppContext);
   const [weekArray, setWeekArray] = useState([]);
-  const [analysis, setAnalysis] = useState(null);
   const [categoryArray, setCategoryArray] = useState([]);
   const [loader, setLoader] = useState({ pie: false, graph: false });
   console.log(JSON.stringify(categoryArray).length)
@@ -160,16 +125,6 @@ const Reports = () => {
   useEffect(() => {
     getBarGraphData(user.sub, setWeekArray, setLoader);
     getPieData(allTransactions, setCategoryArray, setLoader)
-    // try {
-    //   AIRequest({
-    //     systemPrompt:
-    //       "Your'e a descriptive and helpful financial advisor. Be desctiptive and structured in your responses",
-    //     userPrompt: `${JSON.stringify(categoryArray)} advise someone with this`,
-    //     setAnalysis: setAnalysis,
-    //   });
-    // } catch (e) {
-    //   console.log("Error", e);
-    // }
   }, []);
 
   return (
@@ -203,7 +158,6 @@ const Reports = () => {
       </section>
       <section className="reports-section low-section">
         <h1>AI Analysis</h1>
-        <p>{analysis}</p>
       </section>
     </main>
   );
