@@ -27,15 +27,19 @@ const sendBudget = async ({
     category: newBudget.category,
     start_date: newBudget.start_date,
     end_date: newBudget.end_date,
+    budget_id: newBudget.budget_id,
   };
   try {
-    const response = await fetch("https://talents-backend-27b727379837.herokuapp.com/api/budgets/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    const response = await fetch(
+      "https://talents-backend-27b727379837.herokuapp.com/api/budgets/create",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
     if (!response.ok) {
       throw new Error("Error creating budget");
     }
@@ -45,8 +49,6 @@ const sendBudget = async ({
       toast.error(`"${newBudget.name}" already exists`);
       throw new Error("User has another budget with same name");
     }
-    console.log(data);
-    formData.budget_id = data.budget_id;
     formData.total_expenses = 0.0;
 
     setAllBudgets((prev) => {
@@ -83,9 +85,9 @@ const handleSubmit = async ({
   setAllBudgets,
   setBudgetDict,
 }) => {
-  console.log(newBudget);
   if (
     !sub ||
+    !newBudget.budget_id ||
     !newBudget ||
     !newBudget.name ||
     !newBudget.start_date ||

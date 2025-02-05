@@ -8,9 +8,11 @@ import ExpenseTable from "../../Components/ExpenseTable/ExpenseTable";
 import BudgetCard from "../../Components/BudgetCards/BudgetCard";
 // context
 import { AppContext } from "../../context/AppContext";
+// uuid
+import { v4 } from "uuid";
 
 const Budgets = () => {
-  const [newBudget, setNewBudget] = useState({});
+  const [newBudget, setNewBudget] = useState({budget_id: v4()});
   const [created, setCreated] = useState(false);
 
   const {
