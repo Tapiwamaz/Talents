@@ -29,7 +29,7 @@ const sendBudget = async ({
     end_date: newBudget.end_date,
   };
   try {
-    const response = await fetch("http://localhost:5000/api/budgets/create", {
+    const response = await fetch("https://talents-backend-27b727379837.herokuapp.com/api/budgets/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

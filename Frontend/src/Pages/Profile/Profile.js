@@ -66,7 +66,7 @@ const handleDeleteStatement = async (
   setDelete
 ) => {
   try {
-    const response = await fetch(`http://localhost:5000/api/statement`, {
+    const response = await fetch(`https://talents-backend-27b727379837.herokuapp.com/api/statement`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sub: sub, statement_name: statement }),
@@ -128,7 +128,7 @@ const handleClearData = async ({
   // clear budgets, transactions , statements and expenses of a user
 
   try {
-    const response = await fetch(`http://localhost:5000/api/clearall/${sub}`, {
+    const response = await fetch(`https://talents-backend-27b727379837.herokuapp.com/api/clearall/${sub}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

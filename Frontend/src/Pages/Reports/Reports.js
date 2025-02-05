@@ -26,7 +26,7 @@ const getBarGraphData = async (sub, setArr, setLoader) => {
   }
 
   try {
-    const response = await fetch(`http://localhost:5000/api/summaries/${sub}`, {
+    const response = await fetch(`https://talents-backend-27b727379837.herokuapp.com/api/summaries/${sub}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -84,7 +84,7 @@ const getPieData = async (transactions, setArr, setLoader) => {
   }
 
   try {
-    const response = await fetch(`http://localhost:5000/api/categorize`, {
+    const response = await fetch(`https://talents-backend-27b727379837.herokuapp.com/api/categorize`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

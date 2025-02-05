@@ -30,7 +30,7 @@ const fetch_transactions = async (
   });
   try {
     const response = await fetch(
-      `https://talents-backend.onrender.com/api/transactions/${user.sub}`,
+      `https://talents-backend-27b727379837.herokuapp.com/api/transactions/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -39,7 +39,7 @@ const fetch_transactions = async (
       }
     );
     const response2 = await fetch(
-      `https://talents-backend.onrender.com/api/statements/${user.sub}`,
+      `https://talents-backend-27b727379837.herokuapp.com/api/statements/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -92,7 +92,7 @@ const fetch_budgets = async (
 ) => {
   try {
     const response = await fetch(
-      `https://talents-backend.onrender.com/api/budgets/${user.sub}`,
+      `https://talents-backend-27b727379837.herokuapp.com/api/budgets/${user.sub}`,
       {
         method: "GET",
         headers: {
@@ -138,7 +138,7 @@ const fetch_budgets = async (
 const fetch_expenses = async (user, setAllExpenses, setLoadingBooleans) => {
   try {
     const response = await fetch(
-      `https://talents-backend.onrender.com/api/expenses/${user.sub}`,
+      `https://talents-backend-27b727379837.herokuapp.com/api/expenses/${user.sub}`,
       {
         method: "GET",
         headers: {

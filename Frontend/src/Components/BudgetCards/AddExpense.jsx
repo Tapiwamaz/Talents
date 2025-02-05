@@ -17,7 +17,7 @@ const sendExpense = async ({
     amount: newExpense.amount,
   };
   try {
-    const response = await fetch("http://localhost:5000/api/expenses", {
+    const response = await fetch("https://talents-backend-27b727379837.herokuapp.com/api/expenses", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

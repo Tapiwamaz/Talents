@@ -61,7 +61,7 @@ const saveTransactions = async (
   const formData = { transactions: transactions, name: filename, sub: sub };
 
   try {
-    const response = await fetch("http://localhost:5000/api/transactions", {
+    const response = await fetch("https://talents-backend-27b727379837.herokuapp.com/api/transactions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -94,7 +94,7 @@ const saveStatement = async (
   const formData = { summary: summaryData, name: file.name, bank:bank , sub: subToken };
   // console.log(summaryData)
   try {
-    const response = await fetch("http://localhost:5000/api/statement", {
+    const response = await fetch("https://talents-backend-27b727379837.herokuapp.com/api/statement", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -153,7 +153,7 @@ const Summaries = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:5000/api/upload", {
+      const response = await fetch("https://talents-backend-27b727379837.herokuapp.com/api/upload", {
         method: "POST",
         body: formData,
       });
