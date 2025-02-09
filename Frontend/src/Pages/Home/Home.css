@@ -22,25 +22,29 @@
     rgba(41, 110, 9, 0.15) 94%
   );
   display: flex;
-  border: 0;
+  justify-content: space-evenly;
+  /* border: 0; */
 }
 .home-legend-text {
   display: flex;
-  width: 50vw;
+  width: 45vw;
   flex-direction: column;
-  margin: 0 0 0 var(--left-margin);
   gap: var(--sm);
   justify-content: center;
+  /* outline: solid 1px black; */
+
 }
 .legend-img-container {
-  max-width: 500px;
+  max-width: 45vw;
   display: flex;
   align-items: center;
+  /* outline: solid 1px black; */
 
 }
 
 .legend-img {
-  height: 400px;
+  height: 25vw;
+  width: 20vw;
   border-radius: var(--xs);
 }
 

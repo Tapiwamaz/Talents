@@ -96,33 +96,8 @@ const RootLayout = () => {
         </nav>
         {!loggedIn ? (
           <div className="user-icon-container">
-            {/* <GoogleLogin
-              onSuccess={(credentialResponse) => {
-                const { email, given_name, family_name, picture, sub } =
-                  jwtDecode(credentialResponse.credential);
-
-                login({
-                  email: email,
-                  family_name: family_name,
-                  given_name: given_name,
-                  picture: picture,
-                  sub: sub,
-                  setLoggedIn: setLoggedIn,
-                  setUser: setUser,
-                });
-              }}
-              onError={() => {
-                console.log("Login Failed");
-              }}
-              theme={dark ? "filled_black" : "outline"}
-              shape="pill"
-              type="standard"
-              ux_mode="popup"
-              itp_support
-              size="large"
-              useOneTap
-            /> */}
             <button
+              className="google-login-button"
               onClick={() =>
                 loginWithGoogle({
                   setLoggedIn: setLoggedIn,
@@ -130,7 +105,8 @@ const RootLayout = () => {
                 })
               }
             >
-              Login
+              <img src="/google.svg" />
+              <p>Login/Signup</p>
             </button>
           </div>
         ) : (

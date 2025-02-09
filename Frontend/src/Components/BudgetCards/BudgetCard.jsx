@@ -13,7 +13,7 @@ const handleDeleteBudget = async ({
 }) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/budgets/${budget.budget_id}`,
+      `https://talents-backend-27b727379837.herokuapp.com/api/budgets/${budget.budget_id}`,
       {
         method: "DELETE",
         headers: {
@@ -42,7 +42,6 @@ const handleDeleteBudget = async ({
 const BudgetCard = ({ budget, specificBudget }) => {
   const { setAllBudgets, setAllExpenses } = useContext(AppContext);
   const navigate = useNavigate();
-  console.log(budget)
 
   if (budget) {
     return (

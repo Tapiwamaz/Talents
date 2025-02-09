@@ -24,7 +24,6 @@ import {
 // toasts
 import toast from "react-hot-toast";
 
-
 // Functions
 const clearFiles = (
   inputRef,
@@ -56,29 +55,36 @@ const saveTransactions = async (
   filename,
   sub,
   transactions,
-  setUploadedTrans
+  setUploadedTrans,
+  setWaiting
 ) => {
   const formData = { transactions: transactions, name: filename, sub: sub };
 
   try {
-    const response = await fetch("https://talents-backend-27b727379837.herokuapp.com/api/transactions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    const response = await fetch(
+      "https://talents-backend-27b727379837.herokuapp.com/api/transactions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
 
     const data = await response.json();
     if (!response.ok) {
       console.error(data);
+      setWaiting(false);
       throw new Error("Something went wrong with the transaction");
     }
-    console.log("Transactions saved",data);
+    console.log("Transactions saved", data);
     setUploadedTrans([]);
-    toast.success("Statement saved")
+    toast.success("Statement saved");
+    setWaiting(false);
 
   } catch (e) {
+    setWaiting(false);
     console.error("Error", e);
   }
 };
@@ -89,28 +95,40 @@ const saveStatement = async (
   bank,
   subToken,
   transactions,
-  setUploadedTrans
+  setUploadedTrans,
+  setWaiting
 ) => {
-  const formData = { summary: summaryData, name: file.name, bank:bank , sub: subToken };
-  // console.log(summaryData)
+  const formData = {
+    summary: summaryData,
+    name: file.name,
+    bank: bank,
+    sub: subToken,
+  };
+  setWaiting(true);
   try {
-    const response = await fetch("https://talents-backend-27b727379837.herokuapp.com/api/statement", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+  
+    const response = await fetch(
+      "https://talents-backend-27b727379837.herokuapp.com/api/statement",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
 
     if (!response.ok) {
+      setWaiting(false);
       throw new Error("Something went wrong with the statement");
     }
-    // const data = await response.json();
-    // console.log(data);
 
     saveTransactions(file.name, subToken, transactions, setUploadedTrans);
+
   } catch (e) {
     console.error("Error", e);
+    setWaiting(false);
+
   }
 };
 
@@ -119,6 +137,7 @@ const Summaries = () => {
   const [error, setError] = useState("");
   const [searchBool, setSearchBoolean] = useState(false);
   const [bank, setBank] = useState("");
+  const [waiting, setWaiting] = useState(false);
 
   const {
     user,
@@ -148,15 +167,19 @@ const Summaries = () => {
       setError("Please select a file first");
       return;
     }
+    setWaiting(true);
 
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://talents-backend-27b727379837.herokuapp.com/api/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://talents-backend-27b727379837.herokuapp.com/api/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to upload the file");
@@ -185,9 +208,9 @@ const Summaries = () => {
         start_date: start_date,
         end_date: end_date,
         statements: [file.name],
-        banks: [bank]
+        banks: [bank],
       });
-      setBank(bank)
+      setBank(bank);
 
       let temp = add_dates(data.transactions);
       if (summaryData.statements.length > 0) {
@@ -201,9 +224,11 @@ const Summaries = () => {
       setUploadedTrans(temp);
       setError("");
       setLoaded(true);
+      setWaiting(false);
     } catch (err) {
       setError(err.message);
       setLoaded(false);
+      setWaiting(false);
     }
   };
   return (
@@ -274,61 +299,83 @@ const Summaries = () => {
             />
           </div>
           <div className="upload-section-button-holder">
-            {!loaded && (
-              <ArrowUpTrayIcon
-                className="summaries-upload-btn"
-                onClick={handleUpload}
-              />
+            {!loaded && !waiting && (
+              <div className="button-holder-summaries">
+                <ArrowUpTrayIcon
+                  className="summaries-upload-btn"
+                  onClick={handleUpload}
+                />
+                <span className="tooltip">Upload</span>
+              </div>
             )}
-            {!loaded && summaryData.statements && (
-              <XMarkIcon
-                className="summaries-upload-btn"
-                onClick={() => {
-                  setLoaded(true);
-                }}
-              />
+            {waiting && (
+              <div className="button-loading">
+                {" "}
+                <span className="loader" />
+              </div>
             )}
-            {loaded && (
-              <DocumentPlusIcon
-                className="summaries-upload-btn"
-                onClick={() => {
-                  setLoaded(false);
-                }}
-              />
+            {!loaded && summaryData.statements && !waiting && (
+              <div>
+                <XMarkIcon
+                  className="summaries-upload-btn"
+                  onClick={() => {
+                    setLoaded(true);
+                  }}
+                ></XMarkIcon>
+                <span className="tooltip">Close</span>
+              </div>
             )}
-            {loaded && loggedIn && uploadedTrans.length > 0 && (
-              <DocumentArrowDownIcon
-                className="summaries-upload-btn"
-                onClick={() =>
-                  saveStatement(
-                    file,
-                    summaryData,
-                    bank,
-                    user.sub,
-                    uploadedTrans,
-                    setUploadedTrans
-                  )
-                }
-              />
+            {loaded && !waiting && (
+              <div>
+                <DocumentPlusIcon
+                  className="summaries-upload-btn"
+                  onClick={() => {
+                    setLoaded(false);
+                  }}
+                />
+                <span className="tooltip">Add</span>
+              </div>
             )}
-            {uploadedTrans.length > 0 && (
-              <TrashIcon
-                className="summaries-upload-btn"
-                onClick={() => {
-                  clearFiles(
-                    uploadInput,
-                    uploadedTrans,
-                    fetchedTransactions,
-                    setFile,
-                    setError,
-                    setLoaded,
-                    setTransactions,
-                    setUploadedTrans,
-                    setAllTransactions,
-                    setSummaryData
-                  );
-                }}
-              />
+            {loaded && loggedIn && uploadedTrans.length > 0 && !waiting && (
+              <div>
+                <DocumentArrowDownIcon
+                  className="summaries-upload-btn"
+                  onClick={() =>
+                    saveStatement(
+                      file,
+                      summaryData,
+                      bank,
+                      user.sub,
+                      uploadedTrans,
+                      setUploadedTrans,
+                      setWaiting
+                    )
+                  }
+                />
+                <span className="tooltip">Save</span>
+              </div>
+            )}
+            {uploadedTrans.length > 0 && !waiting && (
+              <div>
+                <TrashIcon
+                  className="summaries-upload-btn"
+                  onClick={() => {
+                    clearFiles(
+                      uploadInput,
+                      uploadedTrans,
+                      fetchedTransactions,
+                      setFile,
+                      setError,
+                      setLoaded,
+                      setTransactions,
+                      setUploadedTrans,
+                      setAllTransactions,
+                      setSummaryData
+                    );
+                  }}
+                />
+                <span className="tooltip">Clear</span>
+              </div>
             )}
           </div>
         </section>

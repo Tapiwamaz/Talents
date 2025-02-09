@@ -30,6 +30,8 @@ const sendBudget = async ({
     budget_id: newBudget.budget_id,
   };
   try {
+    setCreatedB(true);
+    setTimeout(()=> console.log("Waiting..."),5000)
     const response = await fetch(
       "https://talents-backend-27b727379837.herokuapp.com/api/budgets/create",
       {
@@ -47,6 +49,7 @@ const sendBudget = async ({
     const data = await response.json();
     if (!data.budget_id) {
       toast.error(`"${newBudget.name}" already exists`);
+      setCreatedB(false);
       throw new Error("User has another budget with same name");
     }
     formData.total_expenses = 0.0;
@@ -69,11 +72,12 @@ const sendBudget = async ({
       return temp;
     });
 
-    setCreatedB(true);
+    setCreatedB(false);
 
     return response;
   } catch (e) {
     console.log(e);
+    setCreatedB(false)
     throw new Error("Error creating budget", e);
   }
 };

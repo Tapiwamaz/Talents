@@ -23,7 +23,6 @@
   transform: scale(1.1);
 }
 
-
 .root-nav {
   margin-left: var(--left-margin);
 }
@@ -47,6 +46,34 @@
   outline: 2px solid var(--main-text);
   outline-offset: 2px;
 }
+
+.google-login-button {
+  background-color: var(--back-page);
+  transition: all 100ms ease-in-out;
+  border: 1px solid var(--main-text);
+  border-radius: var(--sm);
+  padding: var(--xs);
+  font-size: calc(var(--xs)*1.75);
+  cursor: pointer;
+  font-family: inherit;
+  align-items: center;
+  display: flex;
+  gap: var(--sm);
+}
+.google-login-button img {
+  width: calc(2.75*var(--xs));
+}
+.google-login-button:hover,
+.google-login-button:active {
+  background-color: var(--main-text);
+}
+.google-login-button p {
+  color: var(--main-text);
+}
+.google-login-button:hover > p {
+  color: var(--back-page);
+}
+
 .root-profile-pic:hover {
   transform: scale(1.05);
 }
@@ -78,5 +105,3 @@
   margin-left: calc(0.5 * var(--left-margin));
   font-size: var(--sm);
 }
-
-

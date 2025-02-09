@@ -60,10 +60,10 @@ h1 {
 }
 
 .loader {
-  width: 48px;
-  height: 48px;
+  width: 3vw;
+  height: 3vw;
   border: 5px solid var(--primary);
-  border-bottom-color: var(--background);
+  border-bottom-color: var(--back-page);
   border-radius: 50%;
   display: inline-block;
   box-sizing: border-box;
@@ -168,4 +168,10 @@ h1 {
 }
 .checkbox-wrapper-7 .tgl-ios:checked + .tgl-btn:active:after {
   margin-left: -0.8em;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+button:disabled:hover {
+  scale: 1;
 }
