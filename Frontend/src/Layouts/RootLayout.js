@@ -44,22 +44,12 @@ const loginWithGoogle = async ({ setLoggedIn, setUser }) => {
 };
 
 const RootLayout = () => {
-  const { user, setUser, setLoggedIn, loggedIn, dark, setDark } =
+  const { user, setUser, setLoggedIn, loggedIn } =
     useContext(AppContext);
 
   return (
     <div
       className="root-layout"
-      style={
-        dark
-          ? {
-              "--background": "rgb(20,20,20)",
-              "--background-second": "rgb(30,30,30)",
-              "--main-text": "rgb(230,230,230)",
-              "--back-page": "black",
-            }
-          : {}
-      }
     >
       <Toaster position="top-right" reverseOrder={true} />
       <header className="root-header">
@@ -105,7 +95,7 @@ const RootLayout = () => {
                 })
               }
             >
-              <img src="/google.svg" />
+              <img src="/google.svg" alt="google" />
               <p>Login/Signup</p>
             </button>
           </div>
@@ -124,30 +114,6 @@ const RootLayout = () => {
         )}
       </header>
       <Outlet />
-      <footer className="root-footer">
-        <div className="footer-settings-container">
-          <div className="footer-dark-mode">
-            <label className="footer-label" htmlFor="cb2-7">
-              {" "}
-              Dark mode
-            </label>
-            <div class="checkbox-wrapper-7">
-              <input
-                className="tgl tgl-ios"
-                id="cb2-7"
-                type="checkbox"
-                name="dark-mode"
-                checked={dark}
-                onClick={() => {
-                  setDark((p) => !p);
-                }}
-              />
-              <label class="tgl-btn" for="cb2-7" />
-            </div>
-          </div>
-        </div>
-        <div className="footer-info-container"></div>
-      </footer>
     </div>
   );
 };
